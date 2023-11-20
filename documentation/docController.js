@@ -1,9 +1,11 @@
-exports.getDocs = (req, res, next) => {
-  try {
-    const documentation = require("./data");
+const { getDocsModel } = require("./docsModel");
 
-    res.status(200).send({ documentation });
+exports.getDocs = async (req, res, next) => {
+  try {
+    const documentation = await getDocsModel()
+
+    res.status(200).send(documentation);
   } catch (error) {
-    console.log(error);
+    next(error)
   }
 };

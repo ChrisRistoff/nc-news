@@ -25,19 +25,18 @@ describe('documentation', () => {
 
     expect(res.statusCode).toBe(200)
 
-    const docs = res.body.documentation
+    const docs = res.body
 
     for (const key in docs) {
       if (key !== "GET /api") {
-        console.log(key)
         expect(docs[key]).toHaveProperty("description")
         expect(docs[key]).toHaveProperty("queries")
         expect(docs[key]).toHaveProperty("exampleResponse")
         expect(Array.isArray(docs[key]["queries"])).toBe(true)
-        expect(Array.isArray(docs[key]["exampleResponse"]["topics"])).toBe(true)
+        expect(typeof docs[key]["exampleResponse"]).toBe("object")
       } else {
         expect(docs[key]).toHaveProperty("description")
-        expect(docs[key]["description"]).toBe("Returns a json object with all the available endpoints of the API")
+        expect(docs[key]["description"]).toBe("serves up a json representation of all the available endpoints of the api")
       }
     }
   })
