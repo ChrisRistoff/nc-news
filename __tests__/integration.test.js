@@ -113,6 +113,14 @@ describe('comments', () => {
     }
   })
 
+  it('GET 200: Should return an empty array when the article has no comments', async () => {
+    const res = await supertest(app).get("/api/articles/36/comments")
+
+    expect(res.statusCode).toBe(200)
+
+    expect(res.body.comments.length).toBe(0)
+  })
+
   it('GET 404: Should return an error to the user when article is not found', async () => {
     const res = await supertest(app).get("/api/articles/231321/comments")
 

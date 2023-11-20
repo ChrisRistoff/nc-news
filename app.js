@@ -8,8 +8,6 @@ const { getAllCommentsForArticle } = require("./controllers/commentsController")
 const app = express();
 
 
-app.use(express.json());
-
 //docs
 app.get("/api", getDocs)
 
