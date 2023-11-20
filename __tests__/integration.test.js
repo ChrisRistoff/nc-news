@@ -55,3 +55,25 @@ describe('topics', () => {
     }
   })
 })
+
+describe('articles', () => {
+  it('GET 200: Shoulrd return an array of objects containing articles to the user', async() => {
+    const res = await supertest(app).get("/api/articles")
+
+    expect(res.statusCode).toBe(200)
+    expect(Array.isArray(res.body.articles)).toBe(true)
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(expect.objectContaining({
+        "author": expect.any(String),
+        "title": expect.any(String),
+        "article_id": expect.any(Number),
+        "topic": expect.any(String),
+        "created_at": expect.any(String),
+        "votes": expect.any(Number),
+        "article_img_url": expect.any(String),
+        "comment_count": expect.any(Number),
+      }))
+    }
+  })
+})
