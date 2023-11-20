@@ -41,16 +41,16 @@ describe('articles', () => {
     const article = res.body.article
     expect(res.statusCode).toBe(200)
 
-    expect.objectContaining({
+    expect(article).toEqual(expect.objectContaining({
       "author": expect.any(String),
       "title": expect.any(String),
       "article_id": expect.any(Number),
       "body": expect.any(String),
       "topic": expect.any(String),
-      "created_at": expect.any(Date),
+      "created_at": expect.any(String),
       "votes": expect.any(Number),
       "article_img_url": expect.any(String)
-    })
+    }))
   })
 
   it('GET 404: Return an error to the user when an article is not found', async () => {
