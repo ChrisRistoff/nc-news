@@ -1,3 +1,4 @@
+require("jest-sorted")
 const supertest = require("supertest")
 const data = require("../db/data/test-data/index")
 const seed = require("../db/seeds/seed")
@@ -63,6 +64,8 @@ describe('articles', () => {
     expect(res.statusCode).toBe(200)
     expect(Array.isArray(res.body.articles)).toBe(true)
 
+    expect(res.body.articles).toBeSortedBy("created_at", {descending: true})
+
     for (const article of res.body.articles) {
       expect(article).toEqual(expect.objectContaining({
         "author": expect.any(String),
@@ -75,5 +78,6 @@ describe('articles', () => {
         "comment_count": expect.any(Number),
       }))
     }
+
   })
 })

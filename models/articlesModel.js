@@ -15,6 +15,7 @@ exports.getAllArticlesModel = async () => {
     LEFT JOIN comments c
     ON c.article_id = a.article_id
     GROUP BY a.article_id
+    ORDER BY a.created_at DESC
   `)
 
   return articles.rows
