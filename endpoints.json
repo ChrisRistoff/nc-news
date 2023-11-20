@@ -9,6 +9,7 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+
   "GET /api/articles/:article_id": {
     "description": "serves an array of all articles",
     "queries": [],
@@ -23,6 +24,7 @@
           "votes": 0,
           "article_id": 1,
           "article_img_url": "http://google.com"
+          "comment_count": 6
         }
       ]
     }
