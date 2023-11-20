@@ -1,4 +1,4 @@
-const { getAllTopicsModel } = require("../middleware/topicsMiddleware");
+const { getAllTopicsModel } = require("../models/topicsModels");
 
 exports.getAllTopics = async (req, res, next) => {
   try {

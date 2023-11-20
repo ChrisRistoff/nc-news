@@ -26,7 +26,10 @@ describe('topics', () => {
 
     expect(res.statusCode).toBe(200)
     expect(Array.isArray(res.body.topics)).toBe(true)
-    expect(res.body.topics[0]).toHaveProperty("slug")
-    expect(res.body.topics[0]).toHaveProperty("description")
+
+    for (const topic of res.body.topics) {
+      expect(topic).toHaveProperty("slug")
+      expect(topic).toHaveProperty("description")
+    }
   })
 })
