@@ -99,6 +99,8 @@ describe('comments', () => {
     expect(res.statusCode).toBe(200)
     const comments = res.body.comments
 
+    expect(comments).toBeSortedBy("created_at", {descending: true})
+
     for (const comment of comments) {
       expect(comment.article_id).toBe(1)
       expect(comment).toEqual(expect.objectContaining({
