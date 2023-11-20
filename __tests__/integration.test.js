@@ -33,3 +33,28 @@ describe('topics', () => {
     }
   })
 })
+
+describe('articles', () => {
+  it('POST 200: Return an article to the user', async () => {
+    const res = await supertest(app).get("/api/articles/1")
+
+    const article = res.body.article
+    expect(res.statusCode).toBe(200)
+
+    expect(article).toHaveProperty("author")
+    expect(article).toHaveProperty("title")
+    expect(article).toHaveProperty("article_id")
+    expect(article).toHaveProperty("body")
+    expect(article).toHaveProperty("topic")
+    expect(article).toHaveProperty("created_at")
+    expect(article).toHaveProperty("votes")
+    expect(article).toHaveProperty("article_img_url")
+  })
+
+  it('POST 404: Return an error to the user when an article is not found', async () => {
+    const res = await supertest(app).get("/api/articles/12000")
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Article ID not found")
+  })
+})
