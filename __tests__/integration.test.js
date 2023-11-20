@@ -41,10 +41,10 @@ describe('articles', () => {
     const article = res.body.article
     expect(res.statusCode).toBe(200)
 
+    expect(article.article_id).toBe(1)
     expect(article).toEqual(expect.objectContaining({
       "author": expect.any(String),
       "title": expect.any(String),
-      "article_id": expect.any(Number),
       "body": expect.any(String),
       "topic": expect.any(String),
       "created_at": expect.any(String),
