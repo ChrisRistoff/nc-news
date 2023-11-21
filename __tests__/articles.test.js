@@ -57,6 +57,15 @@ describe("get all articles", () => {
     }
   })
 
+  it('GET 200: Should return an empty array if given a valid topic that has no articles', async () => {
+    const res = await supertest(app).get("/api/articles?topic=test")
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.articles.length).toBe(0)
+
+  })
+
+
   it('GET 404: Should return an error if topic does not exist', async () => {
     const res = await supertest(app).get("/api/articles?topic=;DELETE FROM topics;")
 
