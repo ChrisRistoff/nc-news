@@ -1,7 +1,7 @@
 const db = require("../db/connection")
 
-exports.getAllArticlesModel = async () => {
-  const articles = await db.query(`
+exports.getAllArticlesModel = async (topic) => {
+  let dbQuery = `
     SELECT
       a.author,
       a.title,
@@ -14,9 +14,23 @@ exports.getAllArticlesModel = async () => {
     FROM articles a
     LEFT JOIN comments c
     ON c.article_id = a.article_id
+  `
+  if(topic) {
+    const checkTopic = await db.query(`SELECT slug FROM topics WHERE slug = $1`, [topic])
+
+    if(checkTopic.rows.length < 1) return Promise.reject({errCode: 404, errMsg: "Topic not found"})
+    dbQuery += `WHERE topic = $1`
+  }
+
+  dbQuery +=
+    `
     GROUP BY a.article_id
     ORDER BY a.created_at DESC
-  `)
+    `
+  let articles
+
+  if(topic) articles = await db.query(dbQuery, [topic])
+  else articles = await db.query(dbQuery)
 
   return articles.rows
 }

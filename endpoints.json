@@ -13,7 +13,7 @@
 
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": [],
+    "queries": ["topic"],
     "exampleResponse": {
       "articles": [
         {
@@ -69,6 +69,26 @@
     }
   },
 
+  "DELETE /api/comments/:comment_id" : {
+    "description": "deletes a comment by id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+
+  "POST /api/users" : {
+    "description": "return an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  },
+  
   "PATCH /api/articles/:article_id": {
     "description": "serves object of article with ID",
     "queries": [],

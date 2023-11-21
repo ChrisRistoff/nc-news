@@ -5,8 +5,10 @@ const {
 } = require("../models/articlesModel");
 
 exports.getAllArticles = async (req, res, next) => {
+  const { topic } = req.query;
+
   try {
-    const articles = await getAllArticlesModel();
+    const articles = await getAllArticlesModel(topic);
 
     res.status(200).send({ articles });
   } catch (error) {
