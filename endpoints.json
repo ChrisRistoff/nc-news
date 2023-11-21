@@ -10,7 +10,7 @@
     }
   },
 
-  "GET /api/articles/:article_id": {
+  "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": [],
     "exampleResponse": {
@@ -30,6 +30,25 @@
     }
   },
 
+  "GET /api/articles/:article_id": {
+    "description": "serves object of article with ID",
+    "queries": [],
+    "exampleResponse": {
+      "article":
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "article_id": 1,
+          "article_img_url": "http://google.com",
+          "comment_count": 6
+       }
+    }
+  },
+
   "POST /api/articles/:article_id/comments" : {
     "description": "creates a comment for an article and returns the comment as a response",
     "queries": [],
@@ -46,7 +65,6 @@
         "votes": 0,
         "created_at": "2023-11-20T17:01:34.992Z"
       }
-
     }
   }
 }
