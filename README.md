@@ -1,3 +1,6 @@
+## Documentation
+Documentation can be found at [https://nc-news-api-62ip.onrender.com/api](https://nc-news-api-62ip.onrender.com/api)
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
