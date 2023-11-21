@@ -2,6 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
@@ -43,8 +44,7 @@
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "article_id": 1,
-          "article_img_url": "http://google.com",
-          "comment_count": 6
+          "article_img_url": "http://google.com"
        }
     }
   },
@@ -72,5 +72,40 @@
     "description": "deletes a comment by id",
     "queries": [],
     "exampleResponse": {}
+  },
+
+  "POST /api/users" : {
+    "description": "return an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "tickle122",
+          "name": "Tom Tickle",
+          "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+        }
+      ]
+    }
+  },
+  
+  "PATCH /api/articles/:article_id": {
+    "description": "serves object of article with ID",
+    "queries": [],
+    "body": {
+      "inc_votes": 100
+    },
+    "exampleResponse": {
+      "newArticle":
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 100,
+          "article_id": 1,
+          "article_img_url": "http://google.com"
+       }
+    }
   }
 }
