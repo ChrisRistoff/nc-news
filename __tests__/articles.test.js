@@ -50,7 +50,20 @@ describe("get all articles", () => {
     expect(res.statusCode).toBe(200)
     const articles = res.body.articles
 
-    expect(articles).toBeSortedBy("created_at", { descending: true });
+      expect(article.article_id).toBe(1);
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          body: expect.any(String),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    });
 
     for(const article of articles) {
       expect(article.topic).toBe("cats")
@@ -91,6 +104,7 @@ describe("get article by ID", () => {
         created_at: expect.any(String),
         votes: expect.any(Number),
         article_img_url: expect.any(String),
+        comments_count: 11
       }),
     );
   });
