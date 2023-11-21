@@ -1,6 +1,8 @@
 const db = require("../db/connection")
+const orders = ["asc", "desc"]
+const sortBy = new Set(["title", "topic", "author", "created_at", "votes", "comment_count"])
 
-exports.getAllArticlesModel = async (topic) => {
+exports.getAllArticlesModel = async (topic, order, sort_by) => {
   let dbQuery = `
     SELECT
       a.author,
@@ -22,11 +24,25 @@ exports.getAllArticlesModel = async (topic) => {
     dbQuery += `WHERE topic = $1`
   }
 
+  if(sort_by) {
+    if(!sortBy.has(sort_by)) return Promise.reject({errCode: 400, errMsg: "Invalid input"})
+    if(sort_by !== "comment_count") sort_by = "a." + sort_by
+  } else {
+    sort_by = "a.created_at"
+  }
+
+  if(order) {
+    if(!orders.includes(order)) return Promise.reject({errCode: 400, errMsg: "Invalid input"})
+  } else {
+    order = "DESC"
+  }
+
   dbQuery +=
     `
     GROUP BY a.article_id
-    ORDER BY a.created_at DESC
+    ORDER BY ${sort_by} ${order.toUpperCase()}
     `
+
   let articles
 
   if(topic) articles = await db.query(dbQuery, [topic])

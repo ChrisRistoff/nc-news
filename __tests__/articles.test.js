@@ -73,6 +73,120 @@ describe("get all articles", () => {
     expect(res.body.articles.length).toBe(0);
   });
 
+  it('GET 200: Should return articles sorted by parameter in the query', async () => {
+    const res = await supertest(app).get("/api/articles?sort_by=topic")
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+
+    expect(res.body.articles).toBeSortedBy("topic", { descending: true });
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  })
+
+  it('GET 200: Should return articles sorted by parameter and order in the query', async () => {
+    const res = await supertest(app).get("/api/articles?sort_by=topic&order=asc")
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+
+    expect(res.body.articles).toBeSortedBy("topic", { ascending: true });
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  })
+
+  it('GET 200: Should return articles sorted and filtered by parameter and order in the query', async () => {
+    const res = await supertest(app).get("/api/articles?sort_by=comment_count&order=asc&topic=mitch")
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+
+    expect(res.body.articles).toBeSortedBy("topic", { ascending: true });
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  })
+
+  it('GET 200: Should ignore any other query and return all articles', async () => {
+    const res = await supertest(app).get("/api/articles?test=test")
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+
+    expect(res.body.articles).toBeSortedBy("created_at", { descending: true });
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  })
+
+  it("GET 400: Should return an error if sort_by value does not exist", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?sort_by=;DELETE FROM topics;",
+    );
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+
+  it("GET 400: Should return an error if order value does not exist", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?order=;DELETE FROM topics;",
+    );
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+
   it("GET 404: Should return an error if topic does not exist", async () => {
     const res = await supertest(app).get(
       "/api/articles?topic=;DELETE FROM topics;",

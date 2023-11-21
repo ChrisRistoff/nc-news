@@ -1,3 +1,6 @@
+## Short summary
+NC News Backend is the server-side part of a Reddit-like news app. It's built with Node.js and PostgreSQL. This guide helps you set up the backend on your computer. It includes steps for installing, setting up databases, and running the app. The backend lets you manage articles, comments, and user data through API endpoints
+
 ## Documentation
 Documentation can be found at [https://nc-news-api-62ip.onrender.com/api](https://nc-news-api-62ip.onrender.com/api)
 
@@ -9,8 +12,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 Before you begin ensure you have the following installed:
 
-- **Node.js**
-- **PostgreSQL**
+- **Node.js >= 16**
+- **PostgreSQL >= 14.9**
 
 ## Installing
 

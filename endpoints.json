@@ -13,7 +13,7 @@
 
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["topic"],
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -88,7 +88,7 @@
       ]
     }
   },
-  
+
   "PATCH /api/articles/:article_id": {
     "description": "serves object of article with ID",
     "queries": [],
