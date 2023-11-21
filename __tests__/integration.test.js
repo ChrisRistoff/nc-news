@@ -131,7 +131,25 @@ describe("comments", () => {
     expect(comment.author).toBe("butter_bridge")
     expect(comment.body).toBe("test body")
     expect(comment.article_id).toBe(1)
+    expect(comment).toHaveProperty("comment_id")
   });
+
+  it("POST 201: Should create a new comment for an article when extra parameters in the body are given", async () => {
+    const res = await supertest(app).post("/api/articles/1/comments").send({
+      username: "butter_bridge",
+      body: "test body",
+      test: "testing"
+    });
+
+    const comment = res.body.comment
+
+    expect(res.statusCode).toBe(201);
+    expect(comment.author).toBe("butter_bridge")
+    expect(comment.body).toBe("test body")
+    expect(comment.article_id).toBe(1)
+    expect(comment).toHaveProperty("comment_id")
+  });
+
 
   it("POST 400: Should return an error when user gives invalid input for article ID", async () => {
     const res = await supertest(app).post("/api/articles/asdsa/comments").send({
@@ -163,10 +181,19 @@ describe("comments", () => {
     expect(res.body.msg).toBe("Bad request");
   });
 
-  it("POST 401: Should return an error when body is empty", async () => {
+  it("POST 400: Should return an error when body is empty", async () => {
     const res = await supertest(app).post("/api/articles/1/comments").send({
       username: "butter_bridge",
       body: "",
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Body can not be empty");
+  });
+
+  it("POST 400: Should return an error when body is missing", async () => {
+    const res = await supertest(app).post("/api/articles/1/comments").send({
+      username: "butter_bridge"
     });
 
     expect(res.statusCode).toBe(400);
