@@ -1,14 +1,16 @@
-const { getAllArticlesModel } = require("../models/articlesModel")
+const { getAllArticlesModel } = require("../models/articlesModel");
 
 exports.getAllArticles = async (req, res, next) => {
-  try {
-    const articles = await getAllArticlesModel()
+  const { topic } = req.query;
 
-    res.status(200).send({articles})
+  try {
+    const articles = await getAllArticlesModel(topic);
+
+    res.status(200).send({ articles });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 const { getArticleByIdModel } = require("../models/articlesModel");
 
@@ -20,6 +22,6 @@ exports.getArticleById = async (req, res, next) => {
 
     res.status(200).send({ article });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
