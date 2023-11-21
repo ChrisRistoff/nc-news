@@ -16,7 +16,7 @@ exports.createCommentForArticle = async (req, res, next) => {
   } catch(error) {
     next(error)
   }
-
+}
 
 exports.getAllCommentsForArticle = async (req, res, next) => {
   const { article_id } = req.params;

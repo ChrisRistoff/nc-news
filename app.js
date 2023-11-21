@@ -4,10 +4,11 @@ const { getArticleById } = require("./controllers/articlesController");
 const { sqlErrors, customErrors, serverError } = require("./middleware/errorHandlers");
 const { getDocs } = require("./documentation/docController");
 const { getAllArticles } = require("./controllers/articlesController");
-const { getAllCommentsForArticle } = require("./controllers/commentsController");
+const { getAllCommentsForArticle, createCommentForArticle } = require("./controllers/commentsController");
 
 const app = express();
 
+app.use(express.json())
 
 //docs
 app.get("/api", getDocs)
