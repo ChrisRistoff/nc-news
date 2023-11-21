@@ -18,19 +18,20 @@ afterAll(async () => {
   await db.end();
 });
 
-describe('get all users', () => {
-  it('GET 200: Should return an array of all users to the user', async() => {
-    const res = await supertest(app).get("/api/users")
+describe("get all users", () => {
+  it("GET 200: Should return an array of all users to the user", async () => {
+    const res = await supertest(app).get("/api/users");
 
-    const users = res.body.users
+    const users = res.body.users;
 
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     expect(Array.isArray(users)).toBe(true);
+    expect(users.length > 0).toBe(true);
 
     for (const user of users) {
       expect(user).toHaveProperty("username");
       expect(user).toHaveProperty("name");
       expect(user).toHaveProperty("avatar_url");
     }
-  })
-})
+  });
+});
