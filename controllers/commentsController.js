@@ -13,10 +13,10 @@ exports.createCommentForArticle = async (req, res, next) => {
     );
 
     res.status(201).send({ comment });
-  } catch(error) {
-    next(error)
+  } catch (error) {
+    next(error);
   }
-}
+};
 
 exports.getAllCommentsForArticle = async (req, res, next) => {
   const { article_id } = req.params;
