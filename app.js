@@ -4,10 +4,10 @@ const { getArticleById } = require("./controllers/articlesController");
 const { sqlErrors, customErrors, serverError } = require("./middleware/errorHandlers");
 const { getDocs } = require("./documentation/docController");
 const { getAllArticles } = require("./controllers/articlesController");
-const { createCommentForArticle } = require("./controllers/commentsController");
+const { getAllCommentsForArticle } = require("./controllers/commentsController");
+
 const app = express();
 
-app.use(express.json());
 
 //docs
 app.get("/api", getDocs)
@@ -21,6 +21,9 @@ app.get("/api/articles", getAllArticles)
 
 //comments
 app.post("/api/articles/:article_id/comments", createCommentForArticle)
+
+//comments
+app.get("/api/articles/:article_id/comments", getAllCommentsForArticle)
 
 app.use(sqlErrors, customErrors, serverError)
 
