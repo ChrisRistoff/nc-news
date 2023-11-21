@@ -87,7 +87,7 @@ describe("update article", () => {
       .patch("/api/articles/1")
       .send({ inc_votes: 100 });
 
-    expect(res.statusCode).toBe(201);
+    expect(res.statusCode).toBe(200);
     expect(res.body.newArticle.article_id).toBe(1);
     expect(res.body.newArticle).toEqual(
       expect.objectContaining({
@@ -107,7 +107,7 @@ describe("update article", () => {
       .patch("/api/articles/1")
       .send({ inc_votes: 100, test_param: "test" });
 
-    expect(res.statusCode).toBe(201);
+    expect(res.statusCode).toBe(200);
     expect(res.body.newArticle.article_id).toBe(1);
     expect(res.body.newArticle).toEqual(
       expect.objectContaining({
@@ -122,7 +122,7 @@ describe("update article", () => {
     );
   });
 
-  it('PATCH 201, 200: Should update the votes in the article', async () => {
+  it('PATCH, GET 200: Should update the votes in the article', async () => {
     const getArticle = await supertest(app).get("/api/articles/1")
     expect(getArticle.statusCode).toBe(200)
     const votes = getArticle.body.article.votes
@@ -131,7 +131,7 @@ describe("update article", () => {
     const updateArticle = await supertest(app)
       .patch("/api/articles/1")
       .send({ inc_votes });
-    expect(updateArticle.statusCode).toBe(201)
+    expect(updateArticle.statusCode).toBe(200)
 
     const updatedArticle = await supertest(app).get("/api/articles/1")
     expect(updatedArticle.statusCode).toBe(200)
@@ -156,5 +156,14 @@ describe("update article", () => {
 
     expect(res.statusCode).toBe(400)
     expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('PATCH 400: should return an error when an invalid inc_votes is given', async () => {
+    const res = await supertest(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "asdas"});
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input for increment votes")
   })
 });

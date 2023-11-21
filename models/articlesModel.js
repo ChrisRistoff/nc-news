@@ -34,7 +34,7 @@ exports.getArticleByIdModel = async (article_id) => {
 exports.updateArticleByIdModel = async (article_id, inc_votes) => {
 
   if(isNaN(+inc_votes)) {
-    return Promise.reject({errCode: 400, errMsg: "Invalid input for article ID"})
+    return Promise.reject({errCode: 400, errMsg: "Invalid input for increment votes"})
   }
 
   const article = await this.getArticleByIdModel(article_id)

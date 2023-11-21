@@ -33,7 +33,7 @@ exports.updateArticleById = async (req, res, next) => {
   try {
     const newArticle = await updateArticleByIdModel(article_id, inc_votes);
 
-    res.status(201).send({ newArticle });
+    res.status(200).send({ newArticle });
   } catch (error) {
     next(error);
   }
