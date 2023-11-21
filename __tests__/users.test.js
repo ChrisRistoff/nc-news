@@ -35,3 +35,21 @@ describe("get all users", () => {
     }
   });
 });
+
+describe('get user by username', () => {
+  it('GET 200: Should return an object with the user to the user', async () => {
+    const res = await supertest(app).get("/api/users/rogersop")
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.user.username).toBe("rogersop")
+    expect(res.body.user.name).toBe("paul")
+    expect(res.body.user.avatar_url).toBe("https://avatars2.githubusercontent.com/u/24394918?s=400&v=4")
+  })
+
+  it('GET 404: Should return an error when user is not found', async () => {
+    const res = await supertest(app).get("/api/users/asdasdasd")
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("User not found")
+  })
+})
