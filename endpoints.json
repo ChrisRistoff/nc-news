@@ -68,6 +68,12 @@
     }
   },
 
+  "DELETE /api/comments/:comment_id" : {
+    "description": "deletes a comment by id",
+    "queries": [],
+    "exampleResponse": {}
+  },
+
   "POST /api/users" : {
     "description": "return an array of all users",
     "queries": [],
