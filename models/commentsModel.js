@@ -49,3 +49,28 @@ exports.deleteCommentByIdModel = async (comment_id) => {
   DELETE FROM comments WHERE comment_id = $1
   `, [comment_id])
 }
+
+exports.updateCommentByIdModel = async (comment_id, inc_votes) => {
+  if(isNaN(+inc_votes)) {
+    return Promise.reject({errCode: 400, errMsg: "Invalid input"})
+  }
+
+  const comment = await db.query(`
+    SELECT votes FROM comments WHERE comment_id = $1
+  `, [comment_id])
+
+  if(comment.rows.length < 1)
+    return Promise.reject({errCode: 404, errMsg: "Comment ID not found"})
+
+  const newVotes = comment.rows[0].votes + +inc_votes
+
+  const newComment = await db.query(
+    `
+    UPDATE comments
+    SET votes = $2
+    WHERE comment_id = $1
+    RETURNING *
+    `, [comment_id, newVotes])
+
+  return newComment.rows[0]
+}

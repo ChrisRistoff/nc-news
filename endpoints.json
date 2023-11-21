@@ -120,5 +120,14 @@
     "description": "deletes a comment by id",
     "queries": [],
     "exampleResponse": {}
+  },
+
+  "PATCH /api/comments/:comment_id" : {
+    "description": "updates votes of a comment by ID",
+    "queries": [],
+    "body": {
+      "inc_votes": 100
+    },
+    "exampleResponse": {}
   }
 }
