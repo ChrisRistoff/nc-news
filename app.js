@@ -15,10 +15,12 @@ app.get("/api", getDocs)
 //topics
 app.get("/api/topics", getAllTopics);
 
-app.get("/api/articles", getAllArticles)
-
 //articles
 app.get("/api/articles/:article_id", getArticleById)
+app.get("/api/articles", getAllArticles)
+
+//comments
+app.post("/api/articles/:article_id/comments", createCommentForArticle)
 
 //comments
 app.get("/api/articles/:article_id/comments", getAllCommentsForArticle)
