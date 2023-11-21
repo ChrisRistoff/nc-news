@@ -161,7 +161,9 @@ describe('delete comment', () => {
     const updatedComments = await supertest(app).get("/api/articles/1/comments")
     expect(updatedComments.statusCode).toBe(200)
 
-    expect(commentId !== updatedComments.body.comments[0].comment_id).toBe(true)
+    for (const comment of updatedComments.body.comments) {
+      expect(comment.comment_id !== commentId).toBe(true)
+    }
   })
 
   it('DELETE 400: Should return an error when invalid commend ID is given', async () => {
@@ -169,5 +171,12 @@ describe('delete comment', () => {
 
     expect(res.statusCode).toBe(400)
     expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('DELETE 404: Should return an error when article ID does not exist', async () => {
+    const res = await supertest(app).delete("/api/comments/1200")
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Comment does not exist")
   })
 })

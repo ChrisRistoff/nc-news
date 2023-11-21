@@ -38,6 +38,13 @@ exports.getAllCommentsForArticleModel = async (article_id) => {
 }
 
 exports.deleteCommentByIdModel = async (comment_id) => {
+  const comment = await db.query(
+    `
+    SELECT comment_id FROM comments WHERE comment_id = $1
+    `, [comment_id])
+
+  if(comment.rows.length < 1) return Promise.reject({errCode: 404, errMsg: "Comment does not exist"})
+
   return db.query(`
   DELETE FROM comments WHERE comment_id = $1
   `, [comment_id])
