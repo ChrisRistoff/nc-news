@@ -1,4 +1,4 @@
-const { createCommentForArticleModel } = require("../models/commentsModel");
+const { createCommentForArticleModel, deleteCommentByIdModel } = require("../models/commentsModel");
 const { getAllCommentsForArticleModel } = require("../models/commentsModel");
 
 exports.createCommentForArticle = async (req, res, next) => {
@@ -13,10 +13,10 @@ exports.createCommentForArticle = async (req, res, next) => {
     );
 
     res.status(201).send({ comment });
-  } catch(error) {
-    next(error)
+  } catch (error) {
+    next(error);
   }
-}
+};
 
 exports.getAllCommentsForArticle = async (req, res, next) => {
   const { article_id } = req.params;
@@ -27,5 +27,17 @@ exports.getAllCommentsForArticle = async (req, res, next) => {
     res.status(200).send({ comments });
   } catch (error) {
     next(error);
+  }
+};
+
+exports.deleteCommentById = async (req, res, next) => {
+  const { comment_id } = req.params;
+
+  try {
+    await deleteCommentByIdModel(comment_id)
+
+    res.status(204).send({})
+  } catch (error) {
+    next(error)
   }
 };

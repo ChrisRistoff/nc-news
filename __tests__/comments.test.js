@@ -141,3 +141,33 @@ describe("create comments", () => {
     expect(res.body.msg).toBe("Body can not be empty");
   });
 });
+
+describe('delete comment', () => {
+  it('DELETE 204: Should delete comment', async () => {
+    const res = await supertest(app).delete("/api/comments/1")
+
+    expect(res.statusCode).toBe(204)
+  })
+
+  it('POST 200, 204: Comment should be deleted', async () => {
+    const comments = await supertest(app).get("/api/articles/1/comments")
+    expect(comments.statusCode).toBe(200)
+
+    const commentId = comments.body.comments[0].comment_id
+
+    const deleteComment = await supertest(app).delete(`/api/comments/${commentId}`)
+    expect(deleteComment.statusCode).toBe(204)
+
+    const updatedComments = await supertest(app).get("/api/articles/1/comments")
+    expect(updatedComments.statusCode).toBe(200)
+
+    expect(commentId !== updatedComments.body.comments[0].comment_id).toBe(true)
+  })
+
+  it('DELETE 400: Should return an error when invalid commend ID is given', async () => {
+    const res = await supertest(app).delete("/api/comments/asds")
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+})

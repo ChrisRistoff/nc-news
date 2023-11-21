@@ -36,3 +36,9 @@ exports.getAllCommentsForArticleModel = async (article_id) => {
 
   return comments.rows
 }
+
+exports.deleteCommentByIdModel = async (comment_id) => {
+  return db.query(`
+  DELETE FROM comments WHERE comment_id = $1
+  `, [comment_id])
+}
