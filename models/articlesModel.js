@@ -44,3 +44,27 @@ exports.getArticleByIdModel = async (article_id) => {
 
   return article.rows[0]
 }
+
+exports.updateArticleByIdModel = async (article_id, inc_votes) => {
+
+  if(isNaN(+inc_votes)) {
+    return Promise.reject({errCode: 400, errMsg: "Invalid input for increment votes"})
+  }
+
+  const article = await this.getArticleByIdModel(article_id)
+
+  if(!article.article_id)
+    return Promise.reject({errCode: 404, errMsg: "Article ID not found"})
+
+  const newVotes = article.votes + +inc_votes
+
+  const newArticle = await db.query(
+    `
+    UPDATE articles
+    SET votes = $2
+    WHERE article_id = $1
+    RETURNING *
+    `, [article_id, newVotes])
+
+  return newArticle.rows[0]
+}

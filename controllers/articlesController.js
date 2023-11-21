@@ -1,4 +1,8 @@
-const { getAllArticlesModel } = require("../models/articlesModel");
+const {
+  getArticleByIdModel,
+  getAllArticlesModel,
+  updateArticleByIdModel,
+} = require("../models/articlesModel");
 
 exports.getAllArticles = async (req, res, next) => {
   const { topic } = req.query;
@@ -12,8 +16,6 @@ exports.getAllArticles = async (req, res, next) => {
   }
 };
 
-const { getArticleByIdModel } = require("../models/articlesModel");
-
 exports.getArticleById = async (req, res, next) => {
   const { article_id } = req.params;
 
@@ -21,6 +23,19 @@ exports.getArticleById = async (req, res, next) => {
     const article = await getArticleByIdModel(article_id);
 
     res.status(200).send({ article });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateArticleById = async (req, res, next) => {
+  const { inc_votes } = req.body;
+  const { article_id } = req.params;
+
+  try {
+    const newArticle = await updateArticleByIdModel(article_id, inc_votes);
+
+    res.status(200).send({ newArticle });
   } catch (error) {
     next(error);
   }
