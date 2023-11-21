@@ -4,7 +4,8 @@ const { getArticleById, updateArticleById } = require("./controllers/articlesCon
 const { sqlErrors, customErrors, serverError } = require("./middleware/errorHandlers");
 const { getDocs } = require("./documentation/docController");
 const { getAllArticles } = require("./controllers/articlesController");
-const { getAllCommentsForArticle, createCommentForArticle} = require("./controllers/commentsController");
+const { getAllCommentsForArticle, createCommentForArticle } = require("./controllers/commentsController");
+const { getAllUsers } = require("./controllers/usersController");
 
 const app = express();
 
@@ -24,6 +25,9 @@ app.patch("/api/articles/:article_id", updateArticleById)
 //comments
 app.post("/api/articles/:article_id/comments", createCommentForArticle)
 app.get("/api/articles/:article_id/comments", getAllCommentsForArticle)
+
+//users
+app.get("/api/users", getAllUsers)
 
 app.use(sqlErrors, customErrors, serverError)
 
