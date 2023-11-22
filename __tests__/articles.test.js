@@ -73,8 +73,8 @@ describe("get all articles", () => {
     expect(res.body.articles.length).toBe(0);
   });
 
-  it('GET 200: Should return articles sorted by parameter in the query', async () => {
-    const res = await supertest(app).get("/api/articles?sort_by=topic")
+  it("GET 200: Should return articles sorted by parameter in the query", async () => {
+    const res = await supertest(app).get("/api/articles?sort_by=topic");
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
@@ -95,34 +95,12 @@ describe("get all articles", () => {
         }),
       );
     }
-  })
+  });
 
-  it('GET 200: Should return articles sorted by parameter and order in the query', async () => {
-    const res = await supertest(app).get("/api/articles?sort_by=topic&order=asc")
-
-    expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body.articles)).toBe(true);
-
-    expect(res.body.articles).toBeSortedBy("topic", { ascending: true });
-
-    for (const article of res.body.articles) {
-      expect(article).toEqual(
-        expect.objectContaining({
-          author: expect.any(String),
-          title: expect.any(String),
-          article_id: expect.any(Number),
-          topic: expect.any(String),
-          created_at: expect.any(String),
-          votes: expect.any(Number),
-          article_img_url: expect.any(String),
-          comment_count: expect.any(Number),
-        }),
-      );
-    }
-  })
-
-  it('GET 200: Should return articles sorted and filtered by parameter and order in the query', async () => {
-    const res = await supertest(app).get("/api/articles?sort_by=comment_count&order=asc&topic=mitch")
+  it("GET 200: Should return articles sorted by parameter and order in the query", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?sort_by=topic&order=asc",
+    );
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
@@ -143,10 +121,36 @@ describe("get all articles", () => {
         }),
       );
     }
-  })
+  });
 
-  it('GET 200: Should ignore any other query and return all articles', async () => {
-    const res = await supertest(app).get("/api/articles?test=test")
+  it("GET 200: Should return articles sorted and filtered by parameter and order in the query", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?sort_by=comment_count&order=asc&topic=mitch",
+    );
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+
+    expect(res.body.articles).toBeSortedBy("topic", { ascending: true });
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  });
+
+  it("GET 200: Should ignore any other query and return all articles", async () => {
+    const res = await supertest(app).get("/api/articles?test=test");
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
@@ -167,7 +171,7 @@ describe("get all articles", () => {
         }),
       );
     }
-  })
+  });
 
   it("GET 400: Should return an error if sort_by value does not exist", async () => {
     const res = await supertest(app).get(
@@ -319,4 +323,176 @@ describe("update article", () => {
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Invalid input for increment votes");
   });
+});
+
+describe("create article", () => {
+  it("POST 201: Should create a new article and return it to the user", async () => {
+    const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test article",
+        body: "test article body",
+        topic: "test",
+        article_img_url: "test image"
+      });
+
+
+    expect(res.statusCode).toBe(201)
+    expect(res.body.article).toEqual(
+      expect.objectContaining({
+        article_id: 37,
+        votes: 0,
+        created_at: expect.any(String),
+        topic: "test",
+        title: "test article",
+        body: "test article body",
+        article_img_url: "test image",
+        comment_count: 0,
+      })
+    )
+  });
+
+  it("POST 201: Should create a new article when img_url is empty and return it to the user", async () => {
+    const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test article",
+        body: "test article body",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(201)
+    expect(res.body.article).toEqual(
+      expect.objectContaining({
+        article_id: 37,
+        votes: 0,
+        created_at: expect.any(String),
+        topic: "test",
+        title: "test article",
+        body: "test article body",
+        article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+        comment_count: 0,
+      })
+    )
+  });
+
+  it('POST 404: Should return an error when author does not exist', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "testingFalseAuthor",
+        title: "test article",
+        body: "test article body",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("User not found")
+  })
+
+  it('POST 404: Should return an error when title is empty', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "",
+        body: "test article body",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('POST 404: Should return an error when title is missing', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        body: "test article body",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('POST 404: Should return an error when body is empty', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test",
+        body: "",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('POST 404: Should return an error when body is missing', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test",
+        topic: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+
+  it('POST 404: Should return an error when topic does not exist', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test",
+        body: "test",
+        topic: "randomTopic",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Topic not found")
+  })
+
+  it('POST 404: Should return an error when topic is empty', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test",
+        body: "test",
+        topic: "",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Topic not found")
+  })
+
+  it('POST 404: Should return an error when topic is missing', async () => {
+     const res = await supertest(app)
+      .post("/api/articles")
+      .send({
+        author: "rogersop",
+        title: "test",
+        body: "test",
+        article_img_url: ""
+      });
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Topic not found")
+  })
 });

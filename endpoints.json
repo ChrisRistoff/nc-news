@@ -97,6 +97,31 @@
     }
   },
 
+  "POST /api/articles": {
+    "description": "creates a new article and returns it as an object, has default value for article_img_url which can be overwritten",
+    "queries": [],
+    "body": {
+      "author": "cooljmessy",
+      "title": "test",
+      "body": "test body",
+      "topic": "football",
+      "article_img_url": ""
+    },
+    "exampleResponse": {
+      "article": {
+        "article_id": 38,
+        "title": "test",
+        "topic": "football",
+        "author": "cooljmessy",
+        "body": "test body",
+        "created_at": "2023-11-22T09:56:40.703Z",
+        "votes": 0,
+        "article_img_url": "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+        "comment_count": 0
+       }
+    }
+  },
+
   "POST /api/articles/:article_id/comments" : {
     "description": "creates a comment for an article and returns the comment as a response",
     "queries": [],
