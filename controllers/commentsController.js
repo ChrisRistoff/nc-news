@@ -24,9 +24,10 @@ exports.createCommentForArticle = async (req, res, next) => {
 
 exports.getAllCommentsForArticle = async (req, res, next) => {
   const { article_id } = req.params;
+  const { p, limit} = req.query
 
   try {
-    const comments = await getAllCommentsForArticleModel(article_id);
+    const comments = await getAllCommentsForArticleModel(article_id, p, limit);
 
     res.status(200).send({ comments });
   } catch (error) {

@@ -158,6 +158,8 @@ describe("get all articles", () => {
     expect(Array.isArray(res.body.articles)).toBe(true);
     expect(res.body.articles.length).toBe(10)
 
+    expect(res.body.total_count).toBe(36)
+
     for (const article of res.body.articles) {
       expect(article).toEqual(
         expect.objectContaining({
@@ -184,6 +186,8 @@ describe("get all articles", () => {
     expect(res.body.articles.length).toBe(6)
     expect(res.body.articles[0].article_id).toBe(7)
     expect(res.body.articles[5].article_id).toBe(12)
+
+    expect(res.body.total_count).toBe(36)
 
     for (const article of res.body.articles) {
       expect(article).toEqual(

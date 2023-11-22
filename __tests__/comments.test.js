@@ -47,6 +47,62 @@ describe("get comments for article", () => {
     expect(res.body.comments.length).toBe(0);
   });
 
+  it("GET 200: Should paginate results by default", async () => {
+    const res = await supertest(app).get("/api/articles/1/comments");
+
+    expect(res.statusCode).toBe(200);
+    const comments = res.body.comments;
+    expect(comments.length).toBe(10)
+
+    for (const comment of comments) {
+      expect(comment.article_id).toBe(1);
+      expect(comment).toEqual(
+        expect.objectContaining({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        }),
+      );
+    }
+  });
+
+  it("GET 200: Should paginate results by given params", async () => {
+    const res = await supertest(app).get("/api/articles/1/comments?p=2&limit=2");
+
+    expect(res.statusCode).toBe(200);
+    const comments = res.body.comments;
+    expect(comments.length).toBe(2)
+
+    for (const comment of comments) {
+      expect(comment.article_id).toBe(1);
+      expect(comment).toEqual(
+        expect.objectContaining({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        }),
+      );
+    }
+  });
+
+  it("GET 400: Should return an error when given invalid input for page", async () => {
+    const res = await supertest(app).get("/api/articles/1/comments?p=asd&limit=2");
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input")
+  });
+
+  it("GET 400: Should return an error when given invalid input for limit", async () => {
+    const res = await supertest(app).get("/api/articles/1/comments?p=1&limit=asd");
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input")
+  });
+
   it("GET 404: Should return an error to the user when article is not found", async () => {
     const res = await supertest(app).get("/api/articles/231321/comments");
 

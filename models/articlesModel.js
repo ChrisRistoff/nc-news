@@ -9,7 +9,7 @@ const sortBy = new Set([
   "created_at",
   "votes",
   "comment_count",
-  "article_id"
+  "article_id",
 ]);
 
 exports.getAllArticlesModel = async (topic, order, sort_by, p, limit) => {
@@ -58,15 +58,22 @@ exports.getAllArticlesModel = async (topic, order, sort_by, p, limit) => {
     ORDER BY ${sort_by} ${order.toUpperCase()}
     `;
 
-  dbQuery = paginateQuery(dbQuery, p, limit)
-  if(!dbQuery) return Promise.reject({errCode: 400, errMsg: "Invalid input"})
+  dbQuery = paginateQuery(dbQuery, p, limit);
+  if (!dbQuery)
+    return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
 
   let articles;
 
   if (topic) articles = await db.query(dbQuery, [topic]);
   else articles = await db.query(dbQuery);
 
-  return articles.rows;
+  let total_count = await db.query(
+    `SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles;`,
+  );
+
+  total_count = total_count.rows[0].total_count
+
+  return [articles.rows, total_count];
 };
 
 exports.getArticleByIdModel = async (article_id) => {
@@ -124,29 +131,38 @@ exports.createArticleModel = async (
   topic,
   article_img_url,
 ) => {
+  if (!title || !body)
+    return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
 
-  if(!title || !body) return Promise.reject({errCode:400, errMsg: "Invalid input"})
-
-  const authorExists = await getUserByUsernameModel(author)
-  const topicExists = await db.query(`SELECT slug FROM topics WHERE slug=$1`, [topic])
-  if(topicExists.rows.length < 1) return Promise.reject({errCode:404, errMsg: "Topic not found"})
+  const authorExists = await getUserByUsernameModel(author);
+  const topicExists = await db.query(`SELECT slug FROM topics WHERE slug=$1`, [
+    topic,
+  ]);
+  if (topicExists.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
 
   let dbQuery;
-  let newArticle
+  let newArticle;
   if (article_img_url) {
     dbQuery = `
       INSERT INTO articles (author, title, body, topic, article_img_url)
-      VALUES ($1, $2, $3, $4, $5) RETURNING article_id`
+      VALUES ($1, $2, $3, $4, $5) RETURNING article_id`;
 
-      newArticle = await db.query(dbQuery, [author, title, body, topic, article_img_url])
+    newArticle = await db.query(dbQuery, [
+      author,
+      title,
+      body,
+      topic,
+      article_img_url,
+    ]);
   } else {
-     dbQuery = `
+    dbQuery = `
       INSERT INTO articles (author, title, body, topic)
-      VALUES ($1, $2, $3, $4) RETURNING article_id`
-      newArticle = await db.query(dbQuery, [author, title, body, topic])
+      VALUES ($1, $2, $3, $4) RETURNING article_id`;
+    newArticle = await db.query(dbQuery, [author, title, body, topic]);
   }
 
-  const article = await this.getArticleByIdModel(newArticle.rows[0].article_id)
+  const article = await this.getArticleByIdModel(newArticle.rows[0].article_id);
 
-  return article
+  return article;
 };

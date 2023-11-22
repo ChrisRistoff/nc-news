@@ -9,9 +9,9 @@ exports.getAllArticles = async (req, res, next) => {
   const { topic, order, sort_by, p, limit } = req.query;
 
   try {
-    const articles = await getAllArticlesModel(topic, order, sort_by, p, limit);
+    const result = await getAllArticlesModel(topic, order, sort_by, p, limit);
 
-    res.status(200).send({ articles });
+    res.status(200).send({ articles: result[0], total_count: result[1] });
   } catch (error) {
     next(error);
   }
