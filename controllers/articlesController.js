@@ -3,6 +3,7 @@ const {
   getAllArticlesModel,
   updateArticleByIdModel,
   createArticleModel,
+  deleteArticleModel,
 } = require("../models/articlesModel");
 
 exports.getAllArticles = async (req, res, next) => {
@@ -57,5 +58,17 @@ exports.createArticle = async (req, res, next) => {
     res.status(201).send({ article });
   } catch (error) {
     next(error);
+  }
+};
+
+exports.deleteArticle = async (req, res, next) => {
+  const { article_id } = req.params;
+
+  try {
+    await deleteArticleModel(article_id)
+
+    res.status(204).send()
+  } catch (error) {
+    next(error)
   }
 };

@@ -92,6 +92,13 @@
     }
   },
 
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes an article",
+    "queries": [],
+    "exampleResponse": {}
+  },
+
+
   "GET /api/articles/:article_id": {
     "description": "serves object of article with ID",
     "queries": [],

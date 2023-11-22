@@ -71,7 +71,7 @@ exports.getAllArticlesModel = async (topic, order, sort_by, p, limit) => {
     `SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles;`,
   );
 
-  total_count = total_count.rows[0].total_count
+  total_count = total_count.rows[0].total_count;
 
   return [articles.rows, total_count];
 };
@@ -165,4 +165,22 @@ exports.createArticleModel = async (
   const article = await this.getArticleByIdModel(newArticle.rows[0].article_id);
 
   return article;
+};
+
+exports.deleteArticleModel = async (article_id) => {
+  const comments = await db.query(`
+    DELETE FROM comments WHERE article_id = $1
+  `, [article_id])
+
+  const article = await db.query(
+    `
+    DELETE FROM articles WHERE article_id = $1 RETURNING *
+  `,
+    [article_id],
+  );
+
+  if (article.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "Article not found" });
+
+  return
 };
