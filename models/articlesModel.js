@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { paginateQuery } = require("../middleware/paginate");
 const { getUserByUsernameModel } = require("./usersModel");
 const orders = ["asc", "desc"];
 const sortBy = new Set([
@@ -8,9 +9,10 @@ const sortBy = new Set([
   "created_at",
   "votes",
   "comment_count",
+  "article_id"
 ]);
 
-exports.getAllArticlesModel = async (topic, order, sort_by) => {
+exports.getAllArticlesModel = async (topic, order, sort_by, p, limit) => {
   let dbQuery = `
     SELECT
       a.author,
@@ -55,6 +57,9 @@ exports.getAllArticlesModel = async (topic, order, sort_by) => {
     GROUP BY a.article_id
     ORDER BY ${sort_by} ${order.toUpperCase()}
     `;
+
+  dbQuery = paginateQuery(dbQuery, p, limit)
+  if(!dbQuery) return Promise.reject({errCode: 400, errMsg: "Invalid input"})
 
   let articles;
 
