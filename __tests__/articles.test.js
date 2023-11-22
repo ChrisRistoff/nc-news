@@ -546,3 +546,37 @@ describe("create article", () => {
     expect(res.body.msg).toBe("Topic not found")
   })
 });
+
+describe('delete article', () => {
+  it('DELETE 204: Should delete the article', async () => {
+    const res = await supertest(app).delete("/api/articles/1")
+
+    expect(res.statusCode).toBe(204)
+
+    const checkArticle = await supertest(app).get("/api/articles/1")
+    expect(checkArticle.statusCode).toBe(404)
+    expect(checkArticle.body.msg).toBe("Article ID not found")
+
+    const checkComments = await supertest(app).get("/api/articles/1/comments")
+    expect(checkComments.statusCode).toBe(404)
+    expect(checkComments.body.msg).toBe("Article ID not found")
+
+    const deleteAgain = await supertest(app).delete("/api/articles/1")
+    expect(deleteAgain.statusCode).toBe(404)
+    expect(deleteAgain.body.msg).toBe("Article not found")
+  })
+
+  it('DELETE 404: Return an error when article does not exist', async () => {
+    const res = await supertest(app).delete("/api/articles/2123")
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Article not found")
+  })
+
+  it('DELETE 400: Return an error when article ID is invalid', async () => {
+    const res = await supertest(app).delete("/api/articles/asd")
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+})
