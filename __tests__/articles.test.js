@@ -149,13 +149,14 @@ describe("get all articles", () => {
     }
   });
 
-  it("GET 200: Should ignore any other query and return all articles", async () => {
-    const res = await supertest(app).get("/api/articles?test=test");
+  it("GET 200: Should return articles paginated by default", async () => {
+    const res = await supertest(app).get(
+      "/api/articles",
+    );
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
-
-    expect(res.body.articles).toBeSortedBy("created_at", { descending: true });
+    expect(res.body.articles.length).toBe(10)
 
     for (const article of res.body.articles) {
       expect(article).toEqual(
@@ -171,6 +172,51 @@ describe("get all articles", () => {
         }),
       );
     }
+  });
+
+  it("GET 200: Should return articles paginated by query params", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?p=2&limit=6&sort_by=article_id&order=asc",
+    );
+
+    expect(res.statusCode).toBe(200);
+    expect(Array.isArray(res.body.articles)).toBe(true);
+    expect(res.body.articles.length).toBe(6)
+    expect(res.body.articles[0].article_id).toBe(7)
+    expect(res.body.articles[5].article_id).toBe(12)
+
+    for (const article of res.body.articles) {
+      expect(article).toEqual(
+        expect.objectContaining({
+          author: expect.any(String),
+          title: expect.any(String),
+          article_id: expect.any(Number),
+          topic: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          article_img_url: expect.any(String),
+          comment_count: expect.any(Number),
+        }),
+      );
+    }
+  });
+
+  it("GET 200: Should return an error if page is not a valid input", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?p=asds&limit=6",
+    );
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input")
+  });
+
+  it("GET 200: Should return an error if limit is not a valid input", async () => {
+    const res = await supertest(app).get(
+      "/api/articles?p=2&limit=asd",
+    );
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input")
   });
 
   it("GET 400: Should return an error if sort_by value does not exist", async () => {
