@@ -5,6 +5,9 @@ exports.sqlErrors = (err, req, res, next) => {
   if(err.code === "23503") {
     return res.status(400).send({msg: "Bad request"})
   }
+  if(err.code === "23505") {
+    return res.status(409).send({msg: "Already exists"})
+  }
   next(err)
 }
 
