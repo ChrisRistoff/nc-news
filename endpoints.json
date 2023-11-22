@@ -37,6 +37,19 @@
     }
   },
 
+  "POST /api/topics": {
+    "description": "serves an array of all topics",
+    "queries": [],
+    "body": {
+      "slug": "football",
+      "description": "Footie!"
+    },
+    "exampleResponse": {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+  },
+
+
   "GET /api/articles": {
     "description": "serves an array of all articles paginated by default with a limit of 10",
     "queries": ["topic", "sort_by", "order", "p", "limit"],
