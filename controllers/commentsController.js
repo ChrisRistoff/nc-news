@@ -6,8 +6,9 @@ const {
 } = require("../models/commentsModel");
 
 exports.createCommentForArticle = async (req, res, next) => {
-  const { username, body } = req.body;
+  const { body } = req.body;
   const { article_id } = req.params;
+  const { username } = req.user;
 
   try {
     const comment = await createCommentForArticleModel(
@@ -24,7 +25,7 @@ exports.createCommentForArticle = async (req, res, next) => {
 
 exports.getAllCommentsForArticle = async (req, res, next) => {
   const { article_id } = req.params;
-  const { p, limit} = req.query
+  const { p, limit } = req.query;
 
   try {
     const comments = await getAllCommentsForArticleModel(article_id, p, limit);
@@ -37,9 +38,10 @@ exports.getAllCommentsForArticle = async (req, res, next) => {
 
 exports.deleteCommentById = async (req, res, next) => {
   const { comment_id } = req.params;
+  const { username } = req.user;
 
   try {
-    await deleteCommentByIdModel(comment_id);
+    await deleteCommentByIdModel(comment_id, username);
 
     res.status(204).send({});
   } catch (error) {

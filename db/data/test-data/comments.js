@@ -2,7 +2,7 @@ module.exports = [
   {
     body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
     votes: 16,
-    author: "butter_bridge",
+    author: "test",
     article_id: 9,
     created_at: 1586179020000,
   },
@@ -30,7 +30,7 @@ module.exports = [
   {
     body: "I hate streaming noses",
     votes: 0,
-    author: "icellusedkars",
+    author: "test",
     article_id: 1,
     created_at: 1604437200000,
   },
