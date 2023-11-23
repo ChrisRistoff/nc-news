@@ -9,6 +9,7 @@ let token;
 let server;
 beforeAll(async () => {
   await seed(data);
+
   const auth = await supertest(app)
     .post("/api/users/signin")
     .send({ username: "test", password: "password" });

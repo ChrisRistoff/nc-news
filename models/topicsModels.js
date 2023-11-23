@@ -8,15 +8,15 @@ exports.getAllTopicsModel = async () => {
   return topics.rows;
 };
 
-exports.createTopicModel = async (slug, description) => {
+exports.createTopicModel = async (slug, description, creator) => {
   if (!slug || !description)
     return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
   const topic = await db.query(
     `
-    INSERT INTO topics (slug, description)
-    VALUES ($1, $2) RETURNING *
+    INSERT INTO topics (creator, slug, description)
+    VALUES ($3, $1, $2) RETURNING *
     `,
-    [slug, description],
+    [slug, description, creator],
   );
 
   return topic.rows[0];
