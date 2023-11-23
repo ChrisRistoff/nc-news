@@ -10,6 +10,7 @@ exports.createUser = async (req, res, next) => {
   const { name, username, password, avatar_url } = req.body;
   const hashedPw = await hashPassword(password);
 
+
   try {
     const user = await createUserModel(username, name, hashedPw, avatar_url);
     const token = createJWT(user);
