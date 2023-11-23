@@ -4,12 +4,9 @@ const seed = require("../db/seeds/seed");
 const app = require("../app");
 const db = require("../db/connection");
 
-beforeEach(async () => {
-  await seed(data);
-});
-
 let server;
 beforeAll(async () => {
+  await seed(data);
   server = app.listen(0);
 });
 

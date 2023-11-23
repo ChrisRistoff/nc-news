@@ -7,15 +7,16 @@ const db = require("../db/connection");
 
 let token;
 beforeEach(async () => {
+});
+
+let server;
+beforeAll(async () => {
   const auth = await supertest(app)
     .post("/api/users/signin")
     .send({ username: "test", password: "password" });
 
   token = auth.body.token;
-});
 
-let server;
-beforeAll(async () => {
   await seed(data);
   server = app.listen(0);
 });

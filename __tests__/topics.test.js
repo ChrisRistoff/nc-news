@@ -6,17 +6,15 @@ const app = require("../app");
 const db = require("../db/connection");
 
 let token;
-beforeEach(async () => {
+let server;
+beforeAll(async () => {
   await seed(data);
   const auth = await supertest(app)
     .post("/api/users/signin")
     .send({ username: "test", password: "password" });
 
   token = auth.body.token;
-});
 
-let server;
-beforeAll(async () => {
   server = app.listen(0);
 });
 
@@ -58,14 +56,14 @@ describe("create topic", () => {
     const res = await supertest(app)
       .post("/api/topics")
       .send({
-        slug: "testt",
+        slug: "testtt",
         description: "testing",
         test: "test",
       })
       .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.topic.slug).toBe("testt");
+    expect(res.body.topic.slug).toBe("testtt");
     expect(res.body.topic.description).toBe("testing");
   });
 
