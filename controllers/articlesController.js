@@ -4,6 +4,7 @@ const {
   updateArticleByIdModel,
   createArticleModel,
   deleteArticleModel,
+  updateArticleBodyModel,
 } = require("../models/articlesModel");
 
 exports.getAllArticles = async (req, res, next) => {
@@ -45,7 +46,7 @@ exports.updateArticleById = async (req, res, next) => {
 
 exports.createArticle = async (req, res, next) => {
   const { title, body, topic, article_img_url } = req.body;
-  const author = req.user.username
+  const author = req.user.username;
 
   try {
     const article = await createArticleModel(
@@ -64,13 +65,27 @@ exports.createArticle = async (req, res, next) => {
 
 exports.deleteArticle = async (req, res, next) => {
   const { article_id } = req.params;
-  const username = req.user.username
+  const username = req.user.username;
 
   try {
-    await deleteArticleModel(article_id, username)
+    await deleteArticleModel(article_id, username);
 
-    res.status(204).send()
+    res.status(204).send();
   } catch (error) {
-    next(error)
+    next(error);
+  }
+};
+
+exports.editArticleBody = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const { body } = req.body;
+    const { username } = req.user;
+
+    const article = await updateArticleBodyModel(article_id, username, body);
+
+    res.status(200).send({ article });
+  } catch (error) {
+    next(error);
   }
 };

@@ -162,34 +162,73 @@ exports.createArticleModel = async (
     newArticle = await db.query(dbQuery, [author, title, body, topic]);
   }
 
-  newArticle.rows[0].comment_count = 0
+  newArticle.rows[0].comment_count = 0;
 
   return newArticle.rows[0];
 };
 
 exports.deleteArticleModel = async (article_id, username) => {
   const checkArticle = await db.query(
-  `
+    `
   SELECT * FROM articles WHERE article_id = $1
-  `, [article_id])
+  `,
+    [article_id],
+  );
 
   if (checkArticle.rows.length < 1)
     return Promise.reject({ errCode: 404, errMsg: "Article not found" });
 
-  if(checkArticle.rows[0].author !== username) {
-    return Promise.reject({errCode:401, errMsg: "Article belongs to another user"})
+  if (checkArticle.rows[0].author !== username) {
+    return Promise.reject({
+      errCode: 401,
+      errMsg: "Article belongs to another user",
+    });
   }
 
-  const comments = await db.query(`
+  await db.query(
+    `
     DELETE FROM comments WHERE article_id = $1
-  `, [article_id])
+  `,
+    [article_id],
+  );
 
-  const article = await db.query(
+  await db.query(
     `
     DELETE FROM articles WHERE article_id = $1 RETURNING *
   `,
     [article_id],
   );
 
-  return
+  return;
+};
+
+exports.updateArticleBodyModel = async (article_id, username, body) => {
+  if(!body) return Promise.reject({errCode:400, errMsg: "Invalid input"})
+
+  const checkArticle = await this.getArticleByIdModel(article_id)
+
+  if (checkArticle.length < 1) {
+    return Promise.reject({ errCode: 404, errMsg: "Article not found" });
+  }
+
+  if (checkArticle.author !== username) {
+    return Promise.reject({
+      errCode: 401,
+      errMsg: "Article belongs to another user",
+    });
+  }
+
+  const article = await db.query(
+    `
+  UPDATE articles
+  SET body = $1
+  WHERE article_id = $2
+  RETURNING *
+  `,
+    [body, article_id],
+  );
+
+  article.rows[0].comment_count = checkArticle.comment_count
+
+  return article.rows[0];
 };

@@ -15,9 +15,10 @@ exports.getAllTopics = async (req, res, next) => {
 
 exports.createTopic = async (req, res, next) => {
   const { slug, description } = req.body;
+  const creator = req.user.username
 
   try {
-    const topic = await createTopicModel(slug, description);
+    const topic = await createTopicModel(slug, description, creator);
 
     res.status(201).send({ topic });
   } catch (error) {

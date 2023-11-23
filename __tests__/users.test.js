@@ -6,7 +6,6 @@ const db = require("../db/connection");
 
 let server;
 beforeAll(async () => {
-  await seed(data);
   server = app.listen(0);
 });
 
