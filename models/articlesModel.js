@@ -146,7 +146,7 @@ exports.createArticleModel = async (
   if (article_img_url) {
     dbQuery = `
       INSERT INTO articles (author, title, body, topic, article_img_url)
-      VALUES ($1, $2, $3, $4, $5) RETURNING article_id`;
+      VALUES ($1, $2, $3, $4, $5) RETURNING *`;
 
     newArticle = await db.query(dbQuery, [
       author,
@@ -158,13 +158,13 @@ exports.createArticleModel = async (
   } else {
     dbQuery = `
       INSERT INTO articles (author, title, body, topic)
-      VALUES ($1, $2, $3, $4) RETURNING article_id`;
+      VALUES ($1, $2, $3, $4) RETURNING *`;
     newArticle = await db.query(dbQuery, [author, title, body, topic]);
   }
 
-  const article = await this.getArticleByIdModel(newArticle.rows[0].article_id);
+  newArticle.rows[0].comment_count = 0
 
-  return article;
+  return newArticle.rows[0];
 };
 
 exports.deleteArticleModel = async (article_id, username) => {

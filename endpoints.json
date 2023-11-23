@@ -6,6 +6,7 @@
   "POST /api/users/signup" : {
     "description": "creates a new user",
     "queries": [],
+    "authorization": false,
     "body": {
       "username": "krasen",
       "name": "Krasen Hristov",
@@ -20,6 +21,7 @@
   "POST /api/users/signin" : {
     "description": "logs the user in",
     "queries": [],
+    "authorization": false,
     "body": {
       "username": "krasen",
       "password": "password"
@@ -32,6 +34,7 @@
   "GET /api/users" : {
     "description": "return an array of all users",
     "queries": [],
+    "authorization": false,
     "exampleResponse": {
       "users": [
         {
@@ -46,6 +49,7 @@
   "GET /api/users/username" : {
     "description": "return a user",
     "queries": [],
+    "authorization": false,
     "exampleResponse": {
       "user": {
         "username": "tickle122",
@@ -58,14 +62,16 @@
   "GET /api/topics": {
     "description": "serves an array of all topics",
     "queries": [],
+    "authorization": false,
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
 
   "POST /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "creates a new topic and returns it to the user",
     "queries": [],
+    "authorization": true,
     "body": {
       "slug": "football",
       "description": "Footie!"
@@ -79,6 +85,7 @@
   "GET /api/articles": {
     "description": "serves an array of all articles paginated by default with a limit of 10",
     "queries": ["topic", "sort_by", "order", "p", "limit"],
+    "authorization": false,
     "exampleResponse": {
       "articles": [
         {
@@ -100,6 +107,7 @@
   "PATCH /api/articles/:article_id": {
     "description": "serves object of article with ID",
     "queries": [],
+    "authorization": false,
     "body": {
       "inc_votes": 100
     },
@@ -119,15 +127,16 @@
   },
 
   "DELETE /api/articles/:article_id": {
-    "description": "deletes an article",
+    "description": "deletes an article that belongs to the current user",
     "queries": [],
+    "authorization": true,
     "exampleResponse": {}
   },
-
 
   "GET /api/articles/:article_id": {
     "description": "serves object of article with ID",
     "queries": [],
+    "authorization": false,
     "exampleResponse": {
       "article":
         {
@@ -147,6 +156,7 @@
   "POST /api/articles": {
     "description": "creates a new article and returns it as an object, has default value for article_img_url which can be overwritten",
     "queries": [],
+    "authorization": true,
     "body": {
       "author": "cooljmessy",
       "title": "test",
@@ -172,6 +182,7 @@
   "GET /api/articles/:article_id/comments" : {
     "description": "serves an object with all comments for an article",
     "queries": ["p", "limit"],
+    "authorization": false,
     "body": {
       "body": "great cooking content",
       "username": "tickle122"
@@ -191,6 +202,7 @@
   "POST /api/articles/:article_id/comments" : {
     "description": "creates a comment for an article and returns the comment as a response",
     "queries": [],
+    "authorization": true,
     "body": {
       "body": "great cooking content",
       "username": "tickle122"
@@ -208,14 +220,16 @@
   },
 
   "DELETE /api/comments/:comment_id" : {
-    "description": "deletes a comment by id",
+    "description": "deletes a comment by id that belongs to the current user",
     "queries": [],
+    "authorization": true,
     "exampleResponse": {}
   },
 
   "PATCH /api/comments/:comment_id" : {
     "description": "updates votes of a comment by ID",
     "queries": [],
+    "authorization": false,
     "body": {
       "inc_votes": 100
     },

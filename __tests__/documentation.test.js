@@ -31,6 +31,7 @@ describe("documentation", () => {
       if (key !== "GET /api") {
         expect(docs[key]).toHaveProperty("description");
         expect(docs[key]).toHaveProperty("queries");
+        expect(docs[key]).toHaveProperty("authorization");
         expect(docs[key]).toHaveProperty("exampleResponse");
         expect(Array.isArray(docs[key]["queries"])).toBe(true);
         expect(typeof docs[key]["exampleResponse"]).toBe("object");
