@@ -1,6 +1,6 @@
 const express = require("express");
 const topicRouter = require("./routers/topicsRouter");
-const articleRouter = require("./routers/articlesRouter");
+const articles = require("./routers/articlesRouter");
 const commentsRouter = require("./routers/commentsRouter");
 const usersRouter = require("./routers/usersRouter");
 const { sqlErrors, customErrors, serverError } = require("./middleware/errorHandlers");
@@ -17,7 +17,8 @@ app.get("/api", getDocs)
 app.use("/api", topicRouter)
 
 //articles
-app.use("/api", articleRouter)
+app.use("/api", articles.articleRouter)
+app.use("/api", articles.protectedArticleRouter)
 
 //comments
 app.use("/api", commentsRouter)

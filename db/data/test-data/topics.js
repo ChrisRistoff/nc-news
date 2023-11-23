@@ -12,7 +12,11 @@ module.exports = [
     slug: 'paper'
   },
   {
-    description: 'test topic with no articles',
+    description: 'test topic',
     slug: 'test'
+  },
+  {
+    description: 'test topic with no articles',
+    slug: 'empty_test'
   }
 ];

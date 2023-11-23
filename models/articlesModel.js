@@ -167,7 +167,19 @@ exports.createArticleModel = async (
   return article;
 };
 
-exports.deleteArticleModel = async (article_id) => {
+exports.deleteArticleModel = async (article_id, username) => {
+  const checkArticle = await db.query(
+  `
+  SELECT * FROM articles WHERE article_id = $1
+  `, [article_id])
+
+  if (checkArticle.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "Article not found" });
+
+  if(checkArticle.rows[0].author !== username) {
+    return Promise.reject({errCode:401, errMsg: "Article belongs to another user"})
+  }
+
   const comments = await db.query(`
     DELETE FROM comments WHERE article_id = $1
   `, [article_id])
@@ -178,9 +190,6 @@ exports.deleteArticleModel = async (article_id) => {
   `,
     [article_id],
   );
-
-  if (article.rows.length < 1)
-    return Promise.reject({ errCode: 404, errMsg: "Article not found" });
 
   return
 };

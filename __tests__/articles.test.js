@@ -5,12 +5,18 @@ const seed = require("../db/seeds/seed");
 const app = require("../app");
 const db = require("../db/connection");
 
+let token;
 beforeEach(async () => {
-  await seed(data);
+  const auth = await supertest(app)
+    .post("/api/users/signin")
+    .send({ username: "test", password: "password" });
+
+  token = auth.body.token;
 });
 
 let server;
 beforeAll(async () => {
+  await seed(data);
   server = app.listen(0);
 });
 
@@ -67,7 +73,7 @@ describe("get all articles", () => {
   });
 
   it("GET 200: Should return an empty array if given a valid topic that has no articles", async () => {
-    const res = await supertest(app).get("/api/articles?topic=test");
+    const res = await supertest(app).get("/api/articles?topic=empty_test");
 
     expect(res.statusCode).toBe(200);
     expect(res.body.articles.length).toBe(0);
@@ -150,15 +156,13 @@ describe("get all articles", () => {
   });
 
   it("GET 200: Should return articles paginated by default", async () => {
-    const res = await supertest(app).get(
-      "/api/articles",
-    );
+    const res = await supertest(app).get("/api/articles");
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
-    expect(res.body.articles.length).toBe(10)
+    expect(res.body.articles.length).toBe(10);
 
-    expect(res.body.total_count).toBe(36)
+    expect(res.body.total_count).toBe(37);
 
     for (const article of res.body.articles) {
       expect(article).toEqual(
@@ -183,11 +187,11 @@ describe("get all articles", () => {
 
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body.articles)).toBe(true);
-    expect(res.body.articles.length).toBe(6)
-    expect(res.body.articles[0].article_id).toBe(7)
-    expect(res.body.articles[5].article_id).toBe(12)
+    expect(res.body.articles.length).toBe(6);
+    expect(res.body.articles[0].article_id).toBe(7);
+    expect(res.body.articles[5].article_id).toBe(12);
 
-    expect(res.body.total_count).toBe(36)
+    expect(res.body.total_count).toBe(37);
 
     for (const article of res.body.articles) {
       expect(article).toEqual(
@@ -206,21 +210,17 @@ describe("get all articles", () => {
   });
 
   it("GET 200: Should return an error if page is not a valid input", async () => {
-    const res = await supertest(app).get(
-      "/api/articles?p=asds&limit=6",
-    );
+    const res = await supertest(app).get("/api/articles?p=asds&limit=6");
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.msg).toBe("Invalid input")
+    expect(res.body.msg).toBe("Invalid input");
   });
 
   it("GET 200: Should return an error if limit is not a valid input", async () => {
-    const res = await supertest(app).get(
-      "/api/articles?p=2&limit=asd",
-    );
+    const res = await supertest(app).get("/api/articles?p=2&limit=asd");
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.msg).toBe("Invalid input")
+    expect(res.body.msg).toBe("Invalid input");
   });
 
   it("GET 400: Should return an error if sort_by value does not exist", async () => {
@@ -379,19 +379,19 @@ describe("create article", () => {
   it("POST 201: Should create a new article and return it to the user", async () => {
     const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
-        author: "rogersop",
         title: "test article",
         body: "test article body",
         topic: "test",
-        article_img_url: "test image"
+        article_img_url: "test image",
       });
 
-
-    expect(res.statusCode).toBe(201)
+    expect(res.statusCode).toBe(201);
     expect(res.body.article).toEqual(
       expect.objectContaining({
-        article_id: 37,
+        article_id: 38,
+        author: "test",
         votes: 0,
         created_at: expect.any(String),
         topic: "test",
@@ -399,184 +399,198 @@ describe("create article", () => {
         body: "test article body",
         article_img_url: "test image",
         comment_count: 0,
-      })
-    )
+      }),
+    );
   });
 
   it("POST 201: Should create a new article when img_url is empty and return it to the user", async () => {
     const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
-        author: "rogersop",
-        title: "test article",
+        title: "test article2",
         body: "test article body",
         topic: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(201)
+    expect(res.statusCode).toBe(201);
     expect(res.body.article).toEqual(
       expect.objectContaining({
-        article_id: 37,
+        article_id: 39,
         votes: 0,
+        author: "test",
         created_at: expect.any(String),
         topic: "test",
-        title: "test article",
+        title: "test article2",
         body: "test article body",
-        article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+        article_img_url:
+          "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
         comment_count: 0,
-      })
-    )
+      }),
+    );
   });
 
-  it('POST 404: Should return an error when author does not exist', async () => {
-     const res = await supertest(app)
-      .post("/api/articles")
-      .send({
-        author: "testingFalseAuthor",
-        title: "test article",
-        body: "test article body",
-        topic: "test",
-        article_img_url: ""
-      });
+  it("POST 401: Should return an error when user is not authorised", async () => {
+    const res = await supertest(app).post("/api/articles").send({
+      title: "test article",
+      body: "test article body",
+      topic: "test",
+      article_img_url: "",
+    });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("User not found")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
 
-  it('POST 404: Should return an error when title is empty', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when title is empty", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
-        author: "rogersop",
         title: "",
         body: "test article body",
         topic: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('POST 404: Should return an error when title is missing', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when title is missing", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         body: "test article body",
         topic: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('POST 404: Should return an error when body is empty', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when body is empty", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         title: "test",
         body: "",
         topic: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('POST 404: Should return an error when body is missing', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when body is missing", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         title: "test",
         topic: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('POST 404: Should return an error when topic does not exist', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when topic does not exist", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         title: "test",
         body: "test",
         topic: "randomTopic",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Topic not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Topic not found");
+  });
 
-  it('POST 404: Should return an error when topic is empty', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when topic is empty", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         title: "test",
         body: "test",
         topic: "",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Topic not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Topic not found");
+  });
 
-  it('POST 404: Should return an error when topic is missing', async () => {
-     const res = await supertest(app)
+  it("POST 404: Should return an error when topic is missing", async () => {
+    const res = await supertest(app)
       .post("/api/articles")
+      .set("Authorization", `Bearer ${token}`)
       .send({
         author: "rogersop",
         title: "test",
         body: "test",
-        article_img_url: ""
+        article_img_url: "",
       });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Topic not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Topic not found");
+  });
 });
 
-describe('delete article', () => {
-  it('DELETE 204: Should delete the article', async () => {
-    const res = await supertest(app).delete("/api/articles/1")
+describe("delete article", () => {
+  it("DELETE 204: Should delete the article", async () => {
+    const res = await supertest(app)
+      .delete("/api/articles/1")
+      .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(204)
+    expect(res.statusCode).toBe(204);
 
-    const checkArticle = await supertest(app).get("/api/articles/1")
-    expect(checkArticle.statusCode).toBe(404)
-    expect(checkArticle.body.msg).toBe("Article ID not found")
+    const checkArticle = await supertest(app).get("/api/articles/1");
+    expect(checkArticle.statusCode).toBe(404);
+    expect(checkArticle.body.msg).toBe("Article ID not found");
 
-    const checkComments = await supertest(app).get("/api/articles/1/comments")
-    expect(checkComments.statusCode).toBe(404)
-    expect(checkComments.body.msg).toBe("Article ID not found")
+    const checkComments = await supertest(app).get("/api/articles/1/comments");
+    expect(checkComments.statusCode).toBe(404);
+    expect(checkComments.body.msg).toBe("Article ID not found");
 
-    const deleteAgain = await supertest(app).delete("/api/articles/1")
-    expect(deleteAgain.statusCode).toBe(404)
-    expect(deleteAgain.body.msg).toBe("Article not found")
-  })
+    const deleteAgain = await supertest(app)
+      .delete("/api/articles/1")
+      .set("Authorization", `Bearer ${token}`);
 
-  it('DELETE 404: Return an error when article does not exist', async () => {
-    const res = await supertest(app).delete("/api/articles/2123")
+    expect(deleteAgain.statusCode).toBe(404);
+    expect(deleteAgain.body.msg).toBe("Article not found");
+  });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Article not found")
-  })
+  it("DELETE 404: Return an error when article does not exist", async () => {
+    const res = await supertest(app)
+      .delete("/api/articles/2123")
+      .set("Authorization", `Bearer ${token}`);
 
-  it('DELETE 400: Return an error when article ID is invalid', async () => {
-    const res = await supertest(app).delete("/api/articles/asd")
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Article not found");
+  });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
-})
+  it("DELETE 400: Return an error when article ID is invalid", async () => {
+    const res = await supertest(app)
+      .delete("/api/articles/asd")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+});

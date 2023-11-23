@@ -37,7 +37,7 @@ exports.signUserInModel = async (username, password) => {
 
   delete user.password;
 
-  return user;
+  return user.rows[0];
 };
 
 exports.getAllUsersModel = async () => {

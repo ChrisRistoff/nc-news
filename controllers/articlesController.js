@@ -44,7 +44,8 @@ exports.updateArticleById = async (req, res, next) => {
 };
 
 exports.createArticle = async (req, res, next) => {
-  const { author, title, body, topic, article_img_url } = req.body;
+  const { title, body, topic, article_img_url } = req.body;
+  const author = req.user.username
 
   try {
     const article = await createArticleModel(
@@ -63,9 +64,10 @@ exports.createArticle = async (req, res, next) => {
 
 exports.deleteArticle = async (req, res, next) => {
   const { article_id } = req.params;
+  const username = req.user.username
 
   try {
-    await deleteArticleModel(article_id)
+    await deleteArticleModel(article_id, username)
 
     res.status(204).send()
   } catch (error) {

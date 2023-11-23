@@ -31,6 +31,7 @@ exports.protect = (req, res, next) => {
   const split_token = bearer.split(" ");
   const token = split_token[1];
 
+
   if (!token) {
     return res.status(401).send({ msg: "Token is not valid" });
   }
