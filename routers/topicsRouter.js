@@ -1,9 +1,14 @@
 const { Router } = require("express");
-const { getAllTopics, createTopic } = require("../controllers/topicsController");
+const {
+  getAllTopics,
+  createTopic,
+} = require("../controllers/topicsController");
+const { protect } = require("../middleware/authMiddleware");
 
-const topicRouter = Router()
+const topicRouter = Router();
+const protectedTopicRouter = Router();
 
 topicRouter.get("/topics", getAllTopics);
-topicRouter.post("/topics", createTopic)
+protectedTopicRouter.post("/topics", protect, createTopic);
 
-module.exports = topicRouter;
+module.exports = { topicRouter, protectedTopicRouter };

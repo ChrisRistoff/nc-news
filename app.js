@@ -1,5 +1,5 @@
 const express = require("express");
-const topicRouter = require("./routers/topicsRouter");
+const topic = require("./routers/topicsRouter");
 const articles = require("./routers/articlesRouter");
 const comments = require("./routers/commentsRouter");
 const usersRouter = require("./routers/usersRouter");
@@ -14,7 +14,8 @@ app.use(express.json())
 app.get("/api", getDocs)
 
 //topics
-app.use("/api", topicRouter)
+app.use("/api", topic.topicRouter)
+app.use("/api", topic.protectedTopicRouter)
 
 //articles
 app.use("/api", articles.articleRouter)
