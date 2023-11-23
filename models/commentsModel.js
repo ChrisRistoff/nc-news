@@ -43,16 +43,20 @@ exports.getAllCommentsForArticleModel = async (article_id, p, limit) => {
   return comments.rows;
 };
 
-exports.deleteCommentByIdModel = async (comment_id) => {
+exports.deleteCommentByIdModel = async (comment_id, username) => {
   const comment = await db.query(
     `
-    SELECT comment_id FROM comments WHERE comment_id = $1
+    SELECT author FROM comments WHERE comment_id = $1
     `,
     [comment_id],
   );
 
   if (comment.rows.length < 1)
     return Promise.reject({ errCode: 404, errMsg: "Comment does not exist" });
+
+  if(comment.rows[0].author !== username) {
+    return Promise.reject({errCode:401, errMsg: "Comment belongs to another user"})
+  }
 
   return db.query(
     `

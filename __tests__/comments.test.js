@@ -5,12 +5,18 @@ const seed = require("../db/seeds/seed");
 const app = require("../app");
 const db = require("../db/connection");
 
+let token;
 beforeEach(async () => {
-  await seed(data);
+  const auth = await supertest(app)
+    .post("/api/users/signin")
+    .send({ username: "test", password: "password" });
+
+  token = auth.body.token;
 });
 
 let server;
 beforeAll(async () => {
+  await seed(data);
   server = app.listen(0);
 });
 
@@ -52,7 +58,7 @@ describe("get comments for article", () => {
 
     expect(res.statusCode).toBe(200);
     const comments = res.body.comments;
-    expect(comments.length).toBe(10)
+    expect(comments.length).toBe(10);
 
     for (const comment of comments) {
       expect(comment.article_id).toBe(1);
@@ -69,11 +75,13 @@ describe("get comments for article", () => {
   });
 
   it("GET 200: Should paginate results by given params", async () => {
-    const res = await supertest(app).get("/api/articles/1/comments?p=2&limit=2");
+    const res = await supertest(app).get(
+      "/api/articles/1/comments?p=2&limit=2",
+    );
 
     expect(res.statusCode).toBe(200);
     const comments = res.body.comments;
-    expect(comments.length).toBe(2)
+    expect(comments.length).toBe(2);
 
     for (const comment of comments) {
       expect(comment.article_id).toBe(1);
@@ -90,17 +98,21 @@ describe("get comments for article", () => {
   });
 
   it("GET 400: Should return an error when given invalid input for page", async () => {
-    const res = await supertest(app).get("/api/articles/1/comments?p=asd&limit=2");
+    const res = await supertest(app).get(
+      "/api/articles/1/comments?p=asd&limit=2",
+    );
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.msg).toBe("Invalid input")
+    expect(res.body.msg).toBe("Invalid input");
   });
 
   it("GET 400: Should return an error when given invalid input for limit", async () => {
-    const res = await supertest(app).get("/api/articles/1/comments?p=1&limit=asd");
+    const res = await supertest(app).get(
+      "/api/articles/1/comments?p=1&limit=asd",
+    );
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.msg).toBe("Invalid input")
+    expect(res.body.msg).toBe("Invalid input");
   });
 
   it("GET 404: Should return an error to the user when article is not found", async () => {
@@ -120,41 +132,57 @@ describe("get comments for article", () => {
 
 describe("create comments", () => {
   it("POST 201: Should create a new comment for an article", async () => {
-    const res = await supertest(app).post("/api/articles/1/comments").send({
-      username: "butter_bridge",
-      body: "test body",
-    });
+    const res = await supertest(app)
+      .post("/api/articles/1/comments")
+      .send({
+        body: "test body",
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     const comment = res.body.comment;
 
     expect(res.statusCode).toBe(201);
-    expect(comment.author).toBe("butter_bridge");
+    expect(comment.author).toBe("test");
     expect(comment.body).toBe("test body");
     expect(comment.article_id).toBe(1);
     expect(comment).toHaveProperty("comment_id");
   });
 
   it("POST 201: Should create a new comment for an article when extra parameters in the body are given", async () => {
-    const res = await supertest(app).post("/api/articles/1/comments").send({
-      username: "butter_bridge",
-      body: "test body",
-      test: "testing",
-    });
+    const res = await supertest(app)
+      .post("/api/articles/1/comments")
+      .send({
+        body: "test body",
+        test: "testing",
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     const comment = res.body.comment;
 
     expect(res.statusCode).toBe(201);
-    expect(comment.author).toBe("butter_bridge");
+    expect(comment.author).toBe("test");
     expect(comment.body).toBe("test body");
     expect(comment.article_id).toBe(1);
     expect(comment).toHaveProperty("comment_id");
   });
 
-  it("POST 400: Should return an error when user gives invalid input for article ID", async () => {
-    const res = await supertest(app).post("/api/articles/asdsa/comments").send({
-      username: "butter_bridge",
+  it("POST 401: Should return an error when the user is not logged in", async () => {
+    const res = await supertest(app).post("/api/articles/1/comments").send({
       body: "test body",
     });
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
+
+  it("POST 400: Should return an error when user gives invalid input for article ID", async () => {
+    const res = await supertest(app)
+      .post("/api/articles/asdsa/comments")
+      .send({
+        username: "butter_bridge",
+        body: "test body",
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Invalid input");
@@ -166,36 +194,33 @@ describe("create comments", () => {
       .send({
         username: "butter_bridge",
         body: "test body",
-      });
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.msg).toBe("Article ID not found");
   });
 
-  it("POST 400: Should return an error when user can not be found", async () => {
-    const res = await supertest(app).post("/api/articles/1/comments").send({
-      username: "asd",
-      body: "test body",
-    });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.body.msg).toBe("Bad request");
-  });
-
   it("POST 400: Should return an error when body is empty", async () => {
-    const res = await supertest(app).post("/api/articles/1/comments").send({
-      username: "butter_bridge",
-      body: "",
-    });
+    const res = await supertest(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+        body: "",
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Body can not be empty");
   });
 
   it("POST 400: Should return an error when body is missing", async () => {
-    const res = await supertest(app).post("/api/articles/1/comments").send({
-      username: "butter_bridge",
-    });
+    const res = await supertest(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "butter_bridge",
+      })
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Body can not be empty");
@@ -204,7 +229,9 @@ describe("create comments", () => {
 
 describe("delete comment", () => {
   it("DELETE 204: Should delete comment", async () => {
-    const res = await supertest(app).delete("/api/comments/1");
+    const res = await supertest(app)
+      .delete("/api/comments/1")
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(204);
   });
@@ -215,9 +242,10 @@ describe("delete comment", () => {
 
     const commentId = comments.body.comments[0].comment_id;
 
-    const deleteComment = await supertest(app).delete(
-      `/api/comments/${commentId}`,
-    );
+    const deleteComment = await supertest(app)
+      .delete(`/api/comments/${commentId}`)
+      .set("Authorization", `Bearer ${token}`);
+
     expect(deleteComment.statusCode).toBe(204);
 
     const updatedComments = await supertest(app).get(
@@ -231,14 +259,18 @@ describe("delete comment", () => {
   });
 
   it("DELETE 400: Should return an error when invalid commend ID is given", async () => {
-    const res = await supertest(app).delete("/api/comments/asds");
+    const res = await supertest(app)
+      .delete("/api/comments/asds")
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Invalid input");
   });
 
   it("DELETE 404: Should return an error when article ID does not exist", async () => {
-    const res = await supertest(app).delete("/api/comments/1200");
+    const res = await supertest(app)
+      .delete("/api/comments/1200")
+      .set("Authorization", `Bearer ${token}`);
 
     expect(res.statusCode).toBe(404);
     expect(res.body.msg).toBe("Comment does not exist");
@@ -248,16 +280,16 @@ describe("delete comment", () => {
 describe("update comment by ID", () => {
   it("PATCH 200: Should return an updated comment to the user", async () => {
     const res = await supertest(app)
-      .patch("/api/comments/1")
+      .patch("/api/comments/2")
       .send({ inc_votes: 100 });
 
     expect(res.statusCode).toBe(200);
     expect(res.body.newComment).toEqual(
       expect.objectContaining({
         body: expect.any(String),
-        votes: 116,
+        votes: 114,
         author: "butter_bridge",
-        article_id: 9,
+        article_id: 1,
         created_at: expect.any(String),
       }),
     );
@@ -303,15 +335,14 @@ describe("update comment by ID", () => {
   it("PATCH 400: Should return an error when inc_votes is invalid", async () => {
     const res = await supertest(app)
       .patch("/api/comments/1")
-      .send({ inc_votes: "asd"});
+      .send({ inc_votes: "asd" });
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Invalid input");
   });
 
   it("PATCH 400: Should return an error when inc_votes is missing", async () => {
-    const res = await supertest(app)
-      .patch("/api/comments/1")
+    const res = await supertest(app).patch("/api/comments/1");
 
     expect(res.statusCode).toBe(400);
     expect(res.body.msg).toBe("Invalid input");

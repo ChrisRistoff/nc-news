@@ -1,12 +1,14 @@
 const { Router } = require("express");
 const { createCommentForArticle, getAllCommentsForArticle, deleteCommentById, updateCommentById } = require("../controllers/commentsController");
+const { protect } = require("../middleware/authMiddleware");
 
 
 const commentsRouter = Router()
+const protectedCommentsRouter = Router()
 
-commentsRouter.post("/articles/:article_id/comments", createCommentForArticle)
 commentsRouter.get("/articles/:article_id/comments", getAllCommentsForArticle)
-commentsRouter.delete("/comments/:comment_id", deleteCommentById)
 commentsRouter.patch("/comments/:comment_id", updateCommentById)
+protectedCommentsRouter.post("/articles/:article_id/comments", protect, createCommentForArticle)
+protectedCommentsRouter.delete("/comments/:comment_id", protect, deleteCommentById)
 
-module.exports = commentsRouter
+module.exports = {commentsRouter, protectedCommentsRouter}
