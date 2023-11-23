@@ -3,6 +3,22 @@
     "description": "serves up a json representation of all the available endpoints of the api"
   },
 
+  "POST /api/users/signup" : {
+    "description": "creates a new user",
+    "queries": [],
+    "exampleResponse": {
+      "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNzAwNz.Zi_slWniejnP1U-cIyCEXS7i0kelMzo8p0eK5t-jMgg"
+    }
+  },
+
+  "POST /api/users/signin" : {
+    "description": "logs the user in",
+    "queries": [],
+    "exampleResponse": {
+      "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNzAwNz.Zi_slWniejnP1U-cIyCEXS7i0kelMzo8p0eK5t-jMgg"
+    }
+  },
+
   "GET /api/users" : {
     "description": "return an array of all users",
     "queries": [],

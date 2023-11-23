@@ -36,20 +36,82 @@ describe("get all users", () => {
   });
 });
 
-describe('get user by username', () => {
-  it('GET 200: Should return an object with the user to the user', async () => {
-    const res = await supertest(app).get("/api/users/rogersop")
+describe("get user by username", () => {
+  it("GET 200: Should return an object with the user to the user", async () => {
+    const res = await supertest(app).get("/api/users/rogersop");
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.user.username).toBe("rogersop");
+    expect(res.body.user.name).toBe("paul");
+    expect(res.body.user.avatar_url).toBe(
+      "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+    );
+  });
+
+  it("GET 404: Should return an error when user is not found", async () => {
+    const res = await supertest(app).get("/api/users/asdasdasd");
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("User not found");
+    expect(res.body.token).not.toBeDefined()
+  });
+});
+
+describe("create user", () => {
+  it("POST 201: Should create a new user", async () => {
+    const res = await supertest(app).post("/api/users/signup").send({
+      username: "username",
+      name: "name",
+      password: "password",
+    });
+
+    expect(res.statusCode).toBe(201)
+    expect(res.body.token).toBeDefined()
+  });
+
+  it("POST 409: Should return an error if user already exist", async () => {
+    const res = await supertest(app).post("/api/users/signup").send({
+      username: "test",
+      name: "name",
+      password: "password",
+    });
+
+    expect(res.statusCode).toBe(409)
+    expect(res.body.msg).toBe("User already exists")
+    expect(res.body.token).not.toBeDefined()
+  });
+});
+
+describe('sign in', () => {
+  it('POST 200; Should return a token when a valid user signs in', async () => {
+    const res = await supertest(app).post("/api/users/signin").send({
+      username: "test",
+      password: "password"
+    })
 
     expect(res.statusCode).toBe(200)
-    expect(res.body.user.username).toBe("rogersop")
-    expect(res.body.user.name).toBe("paul")
-    expect(res.body.user.avatar_url).toBe("https://avatars2.githubusercontent.com/u/24394918?s=400&v=4")
+    expect(res.body.token).toBeDefined()
   })
 
-  it('GET 404: Should return an error when user is not found', async () => {
-    const res = await supertest(app).get("/api/users/asdasdasd")
+  it('POST 404: Should return an error if the user does not exist', async () => {
+    const res = await supertest(app).post("/api/users/signin").send({
+      username: "testerrrr",
+      password: "password"
+    })
 
     expect(res.statusCode).toBe(404)
     expect(res.body.msg).toBe("User not found")
+    expect(res.body.token).not.toBeDefined()
+  })
+
+  it('POST 409: Should return an error if the passwords do not match', async () => {
+    const res = await supertest(app).post("/api/users/signin").send({
+      username: "test",
+      password: "passwordss"
+    })
+
+    expect(res.statusCode).toBe(401)
+    expect(res.body.msg).toBe("Incorrect password")
+    expect(res.body.token).not.toBeDefined()
   })
 })
