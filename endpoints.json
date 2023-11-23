@@ -6,6 +6,12 @@
   "POST /api/users/signup" : {
     "description": "creates a new user",
     "queries": [],
+    "body": {
+      "username": "krasen",
+      "name": "Krasen Hristov",
+      "password": "password",
+      "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+    },
     "exampleResponse": {
       "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNzAwNz.Zi_slWniejnP1U-cIyCEXS7i0kelMzo8p0eK5t-jMgg"
     }
@@ -14,6 +20,10 @@
   "POST /api/users/signin" : {
     "description": "logs the user in",
     "queries": [],
+    "body": {
+      "username": "krasen",
+      "password": "password"
+    },
     "exampleResponse": {
       "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXJuYW1lIiwiaWF0IjoxNzAwNz.Zi_slWniejnP1U-cIyCEXS7i0kelMzo8p0eK5t-jMgg"
     }
