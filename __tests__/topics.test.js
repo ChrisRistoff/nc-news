@@ -131,3 +131,32 @@ describe("create topic", () => {
     expect(res.body.msg).toBe("Invalid input");
   });
 });
+
+describe('get all active users in a topic', () => {
+  it('GET 200: Should return all active users in a topic', async () => {
+    const res = await supertest(app).get("/api/topics/mitch/users")
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.users.length).toBe(3)
+
+    for (const user of res.body.users) {
+      expect(user).toHaveProperty("username")
+      expect(user).toHaveProperty("name")
+      expect(user).toHaveProperty("avatar_url")
+    }
+  })
+
+  it('GET 200: Should return an empty array', async () => {
+    const res = await supertest(app).get("/api/topics/empty_test/users")
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.users.length).toBe(0)
+  })
+
+  it('GET 404: Should return an error if topic does not exist', async () => {
+    const res = await supertest(app).get("/api/topics/asdasd/users")
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Topic not found")
+  })
+})
