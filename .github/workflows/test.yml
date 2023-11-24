@@ -45,7 +45,7 @@ jobs:
           PGDATABASE: test_db
           PGUSER: test_user
           PGPASSWORD: password
-          JWT_TOKEN: asdas123asdA@DAndasdi!32341!
+          JWT_SECRET: asdas123asdA@DAndasdi!32341!
 
         run: npm t
 
