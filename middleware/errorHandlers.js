@@ -8,6 +8,7 @@ exports.sqlErrors = (err, req, res, next) => {
   if(err.code === "23505") {
     return res.status(409).send({msg: "Already exists"})
   }
+
   next(err)
 }
 
