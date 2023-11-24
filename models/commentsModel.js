@@ -95,3 +95,30 @@ exports.updateCommentByIdModel = async (comment_id, inc_votes) => {
 
   return newComment.rows[0];
 };
+
+exports.editCommentByIdModel = async (comment_id, body, author) => {
+  if(!body) {
+    return Promise.reject({errCode: 400, errMsg: "Invalid input"})
+  }
+
+  const checkComment = await db.query(`
+  SELECT author FROM comments where comment_id = $1
+  `, [comment_id])
+
+  if (checkComment.rows.length < 1) {
+    return Promise.reject({errCode: 404, errMsg: "Comment ID not found"})
+  }
+
+  if (checkComment.rows[0].author !== author) {
+    return Promise.reject({errCode: 401, errMsg: "Comment belongs to another user"})
+  }
+
+  const comment = await db.query(`
+  UPDATE comments
+  SET body = $1
+  WHERE comment_id = $2
+  RETURNING *
+  `, [body, comment_id])
+
+  return comment.rows[0]
+}

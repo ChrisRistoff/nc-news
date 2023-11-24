@@ -3,6 +3,7 @@ const {
   deleteCommentByIdModel,
   updateCommentByIdModel,
   getAllCommentsForArticleModel,
+  editCommentByIdModel,
 } = require("../models/commentsModel");
 
 exports.createCommentForArticle = async (req, res, next) => {
@@ -57,6 +58,20 @@ exports.updateCommentById = async (req, res, next) => {
     const newComment = await updateCommentByIdModel(comment_id, inc_votes);
 
     res.status(200).send({ newComment });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.editCommentById = async (req, res, next) => {
+  const { comment_id } = req.params;
+  const { body } = req.body;
+  const { username } = req.user;
+
+  try {
+    const comment = await editCommentByIdModel(comment_id, body, username);
+
+    res.status(200).send({ comment });
   } catch (error) {
     next(error);
   }

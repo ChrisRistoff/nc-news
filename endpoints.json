@@ -81,7 +81,6 @@
     }
   },
 
-
   "GET /api/articles": {
     "description": "serves an array of all articles paginated by default with a limit of 10",
     "queries": ["topic", "sort_by", "order", "p", "limit"],
@@ -157,13 +156,16 @@
     "description": "updates article body and returns the new article to the user",
     "queries": [],
     "authorization": true,
+    "body": {
+      "body": "new body for article"
+    },
     "exampleResponse": {
       "article":
         {
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
-          "body": "Text from the article..",
+          "body": "new body for article",
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
           "article_id": 1,
@@ -178,7 +180,6 @@
     "queries": [],
     "authorization": true,
     "body": {
-      "author": "cooljmessy",
       "title": "test",
       "body": "test body",
       "topic": "football",
@@ -204,8 +205,26 @@
     "queries": ["p", "limit"],
     "authorization": false,
     "body": {
-      "body": "great cooking content",
-      "username": "tickle122"
+      "body": "great cooking content"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 304,
+        "body": "great cooking content",
+        "article_id": 1,
+        "author": "tickle122",
+        "votes": 0,
+        "created_at": "2023-11-20T17:01:34.992Z"
+      }
+    }
+  },
+
+  "PATCH /api/edit/comments/:comments_id" : {
+    "description": "updates comment body",
+    "queries": [],
+    "authorization": true,
+    "body": {
+      "body": "great cooking content"
     },
     "exampleResponse": {
       "comment": {
@@ -224,8 +243,7 @@
     "queries": [],
     "authorization": true,
     "body": {
-      "body": "great cooking content",
-      "username": "tickle122"
+      "body": "great cooking content"
     },
     "exampleResponse": {
       "comment": {

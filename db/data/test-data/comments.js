@@ -7,6 +7,13 @@ module.exports = [
     created_at: 1586179020000,
   },
   {
+    body: "test body",
+    votes: 16,
+    author: "test",
+    article_id: 9,
+    created_at: 1586179020000,
+  },
+  {
     body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
     votes: 14,
     author: "butter_bridge",
@@ -30,7 +37,7 @@ module.exports = [
   {
     body: "I hate streaming noses",
     votes: 0,
-    author: "test",
+    author: "icellusedkars",
     article_id: 1,
     created_at: 1604437200000,
   },
