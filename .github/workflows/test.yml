@@ -40,10 +40,11 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: |
-          export PGHOST=postgres
-          export PGDATABASE=test_db
-          export PGUSER=test_user
-          export PGPASSWORD=password
-          npm t
+        env:
+          PGHOST: postgres
+          PGDATABASE: test_db
+          PGUSER: test_user
+          PGPASSWORD: password
+
+        run: npm t
 
