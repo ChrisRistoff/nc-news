@@ -3,6 +3,7 @@ NC News Backend is the server-side part of a Reddit-like news app. It's built wi
 
 ## Documentation
 Documentation can be found at [https://nc-news-api-62ip.onrender.com/api](https://nc-news-api-62ip.onrender.com/api)
+Server might hang for a bit before it starts up, so if it does not load instantly please be patient
 
 ## Getting Started
 
@@ -12,8 +13,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 Before you begin ensure you have the following installed:
 
-- **Node.js >= 16**
-- **PostgreSQL >= 14.9**
+| Requirement | Minimum version |
+| --- | --- |
+| Node.js | >= v16.20.2 |
+| PostgreSQL | >= 14.9 |
 
 ## Installing
 

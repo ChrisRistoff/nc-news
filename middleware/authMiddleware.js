@@ -5,8 +5,8 @@ exports.hashPassword = async (password) => {
   return await bcrypt.hash(password, 10);
 };
 
-exports.comparePassword = (password, hashedPassowrd) => {
-  return bcrypt.compare(password, hashedPassowrd);
+exports.comparePassword = (password, hashedPassword) => {
+  return bcrypt.compare(password, hashedPassword);
 };
 
 exports.createJWT = (user) => {

@@ -15,6 +15,8 @@ exports.createUser = async (req, res, next) => {
     const user = await createUserModel(username, name, hashedPw, avatar_url);
     const token = createJWT(user);
 
+    req.user = {username: user.username}
+
     res.status(201).send({ token });
   } catch (error) {
     next(error);

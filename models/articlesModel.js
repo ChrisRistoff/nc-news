@@ -134,7 +134,7 @@ exports.createArticleModel = async (
   if (!title || !body)
     return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
 
-  const authorExists = await getUserByUsernameModel(author);
+  await getUserByUsernameModel(author);
   const topicExists = await db.query(`SELECT slug FROM topics WHERE slug=$1`, [
     topic,
   ]);
