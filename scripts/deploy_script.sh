@@ -4,7 +4,7 @@ set -e
 
 CONTAINER_NAME="nc_news_c"
 IMAGE_NAME="nc_news"
-APP_DIR="/nc_news"
+APP_DIR="~/nc_news"
 
 echo "Starting deployment..."
 
