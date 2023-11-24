@@ -18,7 +18,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
         username VARCHAR PRIMARY KEY,
         name VARCHAR NOT NULL,
         password VARCHAR NOT NULL,
-        avatar_url VARCHAR
+        avatar_url VARCHAR DEFAULT 'https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg'
       );`);
 
   await db.query(`

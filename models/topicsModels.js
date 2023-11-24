@@ -21,3 +21,24 @@ exports.createTopicModel = async (slug, description, creator) => {
 
   return topic.rows[0];
 };
+
+exports.getActiveUsersInTopicModel = async (topic) => {
+  const checkTopic = await db.query(`
+  SELECT slug FROM topics WHERE slug = $1
+  `, [topic])
+
+  if (checkTopic.rows.length < 1) {
+    return Promise.reject({errCode: 404, errMsg: "Topic not found"})
+  }
+
+  const users = await db.query(`
+  SELECT u.username, u.name, u.avatar_url
+  FROM articles a
+  JOIN users u
+  ON a.author = u.username
+  WHERE a.topic = $1
+  GROUP BY u.username
+  `, [topic])
+
+  return users.rows
+}
