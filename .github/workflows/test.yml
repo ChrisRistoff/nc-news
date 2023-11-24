@@ -25,7 +25,7 @@ jobs:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: password
         ports:
-          - 5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 5s
@@ -41,7 +41,7 @@ jobs:
 
       - name: Run tests
         env:
-          PGHOST: postgres
+          PGHOST: localhost
           PGDATABASE: test_db
           PGUSER: test_user
           PGPASSWORD: password
