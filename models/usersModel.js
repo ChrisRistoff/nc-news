@@ -47,6 +47,10 @@ exports.getAllUsersModel = async () => {
   `,
   );
 
+  for (let user of users.rows) {
+    delete user.passowrd
+  }
+
   return users.rows;
 };
 
