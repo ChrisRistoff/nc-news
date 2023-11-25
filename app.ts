@@ -10,10 +10,6 @@ export const app = express();
 
 app.use(express.json())
 
-app.get("/test", (req:Request, res: Response) => {
-  res.status(200).send("WORKING")
-})
-
 //docs
 app.get("/api", getDocs)
 
