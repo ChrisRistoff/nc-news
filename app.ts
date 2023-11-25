@@ -1,4 +1,4 @@
-import express from "express"
+import express, { Request, Response } from "express"
 import * as topic from "./routers/topicsRouter"
 import * as articles from "./routers/articlesRouter"
 import * as comments from "./routers/commentsRouter"
@@ -9,6 +9,10 @@ import { getDocs } from "./documentation/docController"
 export const app = express();
 
 app.use(express.json())
+
+app.get("/test", (req:Request, res: Response) => {
+  res.status(200).send("WORKING")
+})
 
 //docs
 app.get("/api", getDocs)
