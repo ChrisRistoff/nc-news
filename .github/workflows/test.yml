@@ -42,4 +42,3 @@ jobs:
           JWT_SECRET: asdas123asdA@DAndasdi!32341!
 
         run: npm t
-

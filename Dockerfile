@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 80
 
-CMD ["node", "listen.js"]
+CMD ["npm","run", "start"]
