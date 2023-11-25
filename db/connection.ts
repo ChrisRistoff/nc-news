@@ -13,12 +13,12 @@ if (ENV === "production") {
 
 const envPath = path.resolve(__dirname, relativePath);
 
-console.log(`Loading environment variables from: ${envPath}`);
+// console.log(`Loading environment variables from: ${envPath}`);
 
 dotenv.config({ path: envPath });
 
-console.log(`Environment: ${ENV}`);
-console.log(`PGDATABASE: ${process.env.PGDATABASE}`);
+// console.log(`Environment: ${ENV}`);
+// console.log(`PGDATABASE: ${process.env.PGDATABASE}`);
 
 const config: { connectionString?: string; max?: number } = {};
 
