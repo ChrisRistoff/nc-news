@@ -4,10 +4,6 @@ NC News Backend is the server-side part of a Reddit-like news app. It's built wi
 ## Documentation
 Documentation can be found at [http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api](http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api)
 
-# Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
 ## Prerequisites
 
 Before you begin ensure you have the following installed:
@@ -24,14 +20,14 @@ Before you begin ensure you have the following installed:
 
 A step by step series of examples that tell you how to get environment running.
 
-- Clone the repository:
+#### Clone the repository:
 
-ssh:
-```
-git clone [http or ssh URL]
-```
+- ##### ssh: ```git clone git@github.com:krasenHristov/nc-news.git```
 
-- Install NPM packages:
+
+- ##### https: ```git clone https://github.com/krasenHristov/nc-news.git```
+
+#### Install NPM packages:
 
 ```
 npm install
@@ -62,12 +58,13 @@ graph LR
     E[Deploying] -- Copy files --> F(Run Deployment Scripts) --> G(Deployment Successful)
 ```
 
-# To run locally
+# Set up
 ## Setting Up Environment Variables
 
 Since .env.test and .env.development are not tracked by Git, you'll need to create these files manually to connect to the databases locally.
 
-### Create a .env.test file:
+### For Local Development
+- #### Create a .env.test file
 
 This file should contain environment variables for your test environment.
 Add the following line to the file:
@@ -78,7 +75,7 @@ PGDATABASE=nc_news_test
 
 This sets the PostgreSQL database to nc_news_test for your test environment.
 
-- ### Create a .env.development file:
+- #### Create a .env.development file
 
 This file should contain environment variables for your development environment.
 Add the following line to the file:
@@ -89,6 +86,14 @@ PGDATABASE=nc_news
 
 This sets the PostgreSQL database to nc_news for your development environment.
 Ensure that these files are located in the root directory of your project.
+
+### For Production
+- #### Create a .env.production file
+This file should contain the URL to your hosted database.
+Add the following line to the file:
+```
+DATABASE_URL=<your_database_url>
+```
 
 ## Running the Application
 
