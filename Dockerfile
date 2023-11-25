@@ -6,10 +6,10 @@ ENV NODE_ENV=production
 
 COPY package*.json ./
 
-RUN npm install --ignore-scripts
+RUN npm install
 
 COPY . .
 
 EXPOSE 80
 
-CMD ["npm","run", "start"]
+CMD ["node", "./dist/listen.js"]

@@ -13,6 +13,9 @@ cd "$APP_DIR"
 echo "Pulling latest changes from Git..."
 git pull origin main
 
+echo "Compiling to js"
+tsc
+
 echo "Stopping the existing Docker container..."
 sudo docker stop $CONTAINER_NAME || true
 sudo docker rm $CONTAINER_NAME || true
