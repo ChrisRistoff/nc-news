@@ -55,7 +55,7 @@ The project is configured for CI/CD using GitHub Actions. When a pull request is
 graph LR
     A(Pull request) -- Prepare Environment--> B(Testing) --Test Success--> C[Merge]
     B -- Review and fix --> A
-    E[Deploying] -- Copy files --> F(Run Deployment Scripts) --> G(Deployment Successful)
+    E[Push to main] -- Prepare Environment --> F(Deployment) -- Run Deployment Scripts --> G(Deployment Successful)
 ```
 
 # Set up
