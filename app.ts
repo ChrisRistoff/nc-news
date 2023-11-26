@@ -9,13 +9,30 @@ import {
   serverError,
 } from "./middleware/errorHandlers";
 import { getDocs } from "./documentation/docController";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express"
 
 export const app = express();
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "NC news API",
+      version: "1.0.0",
+    },
+  },
+  apis: ["./dist/routers/*.js"]
+};
+
+const openApiSpecs = swaggerJSDoc(options)
 
 app.use(express.json());
 
 //docs
 app.get("/api", getDocs);
+
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiSpecs));
 
 //topics
 app.use("/api", topic.topicRouter);
