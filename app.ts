@@ -21,8 +21,20 @@ const options = {
       title: "NC news API",
       version: "1.0.0",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [{
+      bearerAuth: [],
+    }],
   },
-  apis: ["./dist/routers/*.js"]
+  apis: ["./dist/routers/*.js"],
 };
 
 const openApiSpecs = swaggerJSDoc(options)
