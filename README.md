@@ -2,7 +2,7 @@
 NC News Backend is the server-side part of a Reddit-like news app. It's built with Node.js and PostgreSQL. This guide helps you set up the backend on your computer. It includes steps for installing, setting up databases, and running the app. The backend lets you manage articles, comments, and user data through API endpoints
 
 ## Documentation
-Documentation can be found at [http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api](http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api)
+Documentation can be found at [http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api/docs](http://ec2-35-179-90-244.eu-west-2.compute.amazonaws.com/api/docs)
 
 ## Prerequisites
 
