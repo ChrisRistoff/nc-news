@@ -249,7 +249,7 @@ protectedArticleRouter.delete("/articles/:article_id", protect, deleteArticle);
 
 /**
  * @swagger
- * /api/articles/body/{article_id}:
+ * /api/articles/{article_id}/edit:
  *   patch:
  *     summary: Updates the body of a specific article
  *     description: Allows an authenticated user to update the body of their own article. Users cannot update articles created by others.
@@ -291,7 +291,7 @@ protectedArticleRouter.delete("/articles/:article_id", protect, deleteArticle);
  *         description: Article ID not found
  */
 protectedArticleRouter.patch(
-  "/edit/articles/:article_id",
+  "/articles/:article_id/edit",
   protect,
   editArticleBody,
 );

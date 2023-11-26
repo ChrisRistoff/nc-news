@@ -174,7 +174,7 @@ describe("delete comment", () => {
 describe("edit comments", () => {
   it("PATCH 200: Should update a comment by comment ID", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/comments/2")
+      .patch("/api/comments/2/edit")
       .send({
         body: "edited test body",
       })
@@ -190,7 +190,7 @@ describe("edit comments", () => {
   });
 
   it("PATCH 401: Should return an error when user is not signed in", async () => {
-    const res = await supertest(app).patch("/api/edit/comments/2").send({
+    const res = await supertest(app).patch("/api/comments/2/edit").send({
       body: "edited test body",
     });
 
@@ -200,7 +200,7 @@ describe("edit comments", () => {
 
   it("PATCH 404: Should return an error comment ID is not found", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/comments/1000")
+      .patch("/api/comments/1000/edit")
       .send({
         body: "edited test body",
       })
@@ -212,7 +212,7 @@ describe("edit comments", () => {
 
   it("PATCH 401: Should return an error when comment belongs to another user", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/comments/10")
+      .patch("/api/comments/10/edit")
       .send({
         body: "edited test body",
       })
@@ -224,7 +224,7 @@ describe("edit comments", () => {
 
   it("PATCH 400: Should return an error when body is empty", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/comments/2")
+      .patch("/api/comments/2/edit")
       .send({
         body: "",
       })
@@ -236,7 +236,7 @@ describe("edit comments", () => {
 
   it("PATCH 400: Should return an error when body is missing", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/comments/2")
+      .patch("/api/comments/2/edit")
       .send({})
       .set("Authorization", `Bearer ${token}`);
 
