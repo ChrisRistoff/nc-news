@@ -2,6 +2,7 @@ import express from "express";
 import * as topic from "./routers/topicsRouter";
 import * as articles from "./routers/articlesRouter";
 import * as comments from "./routers/commentsRouter";
+import * as replies from "./routers/repliesRouter"
 import { usersRouter } from "./routers/usersRouter";
 import {
   sqlErrors,
@@ -57,6 +58,9 @@ app.use("/api", articles.protectedArticleRouter);
 //comments
 app.use("/api", comments.commentsRouter);
 app.use("/api", comments.protectedCommentsRouter);
+
+//replies
+app.use("/api", replies.repliesRouter)
 
 //users
 app.use("/api", usersRouter);
