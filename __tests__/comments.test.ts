@@ -1,8 +1,8 @@
-import supertest from "supertest"
-import * as data from "../db/data/test-data/index"
-import {seed} from "../db/seeds/seed"
-import {app} from "../app"
-import db from "../db/connection"
+import supertest from "supertest";
+import * as data from "../db/data/test-data/index";
+import { seed } from "../db/seeds/seed";
+import { app } from "../app";
+import db from "../db/connection";
 
 let token: any;
 let server: any;

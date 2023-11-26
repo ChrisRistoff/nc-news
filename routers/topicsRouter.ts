@@ -1,10 +1,10 @@
-import { Router } from "express"
+import { Router } from "express";
 import {
   getAllTopics,
   createTopic,
   getActiveUsersInTopic,
-} from "../controllers/topicsController"
-import { protect } from "../middleware/authMiddleware"
+} from "../controllers/topicsController";
+import { protect } from "../middleware/authMiddleware";
 
 export const topicRouter = Router();
 export const protectedTopicRouter = Router();

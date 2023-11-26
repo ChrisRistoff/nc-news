@@ -1,9 +1,16 @@
-export const convertTimestampToDate = ({ created_at, ...otherProperties }: any) => {
+export const convertTimestampToDate = ({
+  created_at,
+  ...otherProperties
+}: any) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
 };
 
-export const createRef = (arr: any[], key: string | number, value: string | number) => {
+export const createRef = (
+  arr: any[],
+  key?: string | number,
+  value?: string | number,
+) => {
   return arr.reduce((ref, element) => {
     ref[element[key]] = element[value];
     return ref;

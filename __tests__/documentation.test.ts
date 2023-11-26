@@ -1,6 +1,6 @@
-import supertest from "supertest"
-import {app} from "../app"
-import db from "../db/connection"
+import supertest from "supertest";
+import { app } from "../app";
+import db from "../db/connection";
 
 let server: any;
 beforeAll(async () => {
@@ -37,5 +37,3 @@ describe("documentation", () => {
     }
   });
 });
-
-

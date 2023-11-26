@@ -1,3 +1,4 @@
+import { QueryResult } from "pg";
 import db from "../db/connection";
 import { paginateQuery } from "../middleware/paginate";
 import { getUserByUsernameModel } from "./usersModel";
@@ -20,7 +21,7 @@ export const getAllArticlesModel = async (
   p: any,
   limit: any,
 ) => {
-  let dbQuery: string | boolean
+  let dbQuery: string | boolean;
 
   dbQuery = `
     SELECT
@@ -71,12 +72,12 @@ export const getAllArticlesModel = async (
   if (!dbQuery)
     return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
 
-  let articles: any;
+  let articles: QueryResult;
 
   if (topic) articles = await db.query(dbQuery, [topic]);
   else articles = await db.query(dbQuery);
 
-  let total_count = await db.query(
+  let total_count: QueryResult = await db.query(
     `SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles;`,
   );
 
@@ -86,7 +87,7 @@ export const getAllArticlesModel = async (
 };
 
 export const getArticleByIdModel = async (article_id: string) => {
-  const article = await db.query(
+  const article: QueryResult = await db.query(
     `
     SELECT
       a.*, CAST(COUNT(c.comment_id) AS INTEGER) AS comment_count
@@ -123,7 +124,7 @@ export const updateArticleByIdModel = async (
 
   const newVotes = article.votes + +inc_votes;
 
-  const newArticle = await db.query(
+  const newArticle: QueryResult = await db.query(
     `
     UPDATE articles
     SET votes = $2
@@ -147,14 +148,15 @@ export const createArticleModel = async (
     return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
 
   await getUserByUsernameModel(author);
-  const topicExists = await db.query(`SELECT slug FROM topics WHERE slug=$1`, [
-    topic,
-  ]);
+  const topicExists: QueryResult = await db.query(
+    `SELECT slug FROM topics WHERE slug=$1`,
+    [topic],
+  );
   if (topicExists.rows.length < 1)
     return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
 
   let dbQuery: string | boolean;
-  let newArticle: any;
+  let newArticle: QueryResult;
   if (article_img_url) {
     dbQuery = `
       INSERT INTO articles (author, title, body, topic, article_img_url)
@@ -183,7 +185,7 @@ export const deleteArticleModel = async (
   article_id: string,
   username: string,
 ) => {
-  const checkArticle = await db.query(
+  const checkArticle: QueryResult = await db.query(
     `
   SELECT * FROM articles WHERE article_id = $1
   `,
@@ -237,7 +239,7 @@ export const updateArticleBodyModel = async (
     });
   }
 
-  const article = await db.query(
+  const article: QueryResult = await db.query(
     `
   UPDATE articles
   SET body = $1

@@ -1,13 +1,14 @@
-import format from  "pg-format"
-import { hashPassword } from "../../middleware/authMiddleware"
-import db from "../connection"
-import {
-  convertTimestampToDate,
-  createRef,
-  formatComments,
-} from "./utils"
+import format from "pg-format";
+import { hashPassword } from "../../middleware/authMiddleware";
+import db from "../connection";
+import { convertTimestampToDate, createRef, formatComments } from "./utils";
 
-export const seed = async ({ topicData, userData, articleData, commentData }) => {
+export const seed = async ({
+  topicData,
+  userData,
+  articleData,
+  commentData,
+}) => {
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
   await db.query(`DROP TABLE IF EXISTS topics;`);
@@ -66,7 +67,11 @@ export const seed = async ({ topicData, userData, articleData, commentData }) =>
 
   const insertTopicsQueryStr = format(
     "INSERT INTO topics (creator, slug, description) VALUES %L;",
-    topicData.map(({ creator, slug, description }) => [creator , slug, description]),
+    topicData.map(({ creator, slug, description }) => [
+      creator,
+      slug,
+      description,
+    ]),
   );
   await db.query(insertTopicsQueryStr);
 

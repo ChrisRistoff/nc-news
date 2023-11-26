@@ -1,9 +1,9 @@
-import "jest-extended"
+import "jest-extended";
 import {
   convertTimestampToDate,
   createRef,
   formatComments,
-} from "../db/seeds/utils"
+} from "../db/seeds/utils";
 
 describe("convertTimestampToDate", () => {
   test("returns a new object", () => {
@@ -46,10 +46,8 @@ describe("convertTimestampToDate", () => {
 });
 
 describe("createRef", () => {
-
   test("returns an empty object, when passed an empty array", () => {
     const input = [];
-    // @ts-ignore
     const actual = createRef(input);
     const expected = {};
     expect(actual).toEqual(expected);
@@ -58,10 +56,9 @@ describe("createRef", () => {
   test("returns a reference object when passed an array with a single items", () => {
     const input = [{ title: "title1", article_id: 1, name: "name1" }];
     let actual = createRef(input, "title", "article_id");
-    let expected = { title1: 1 };
+    let expected: any = { title1: 1 };
     expect(actual).toEqual(expected);
     actual = createRef(input, "name", "title");
-    // @ts-ignore
     expected = { name1: "title1" };
     expect(actual).toEqual(expected);
   });
@@ -80,7 +77,6 @@ describe("createRef", () => {
   test("does not mutate the input", () => {
     const input = [{ title: "title1", article_id: 1 }];
     const control = [{ title: "title1", article_id: 1 }];
-    // @ts-ignore
     createRef(input);
     expect(input).toEqual(control);
   });

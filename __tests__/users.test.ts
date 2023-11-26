@@ -1,7 +1,7 @@
-import "jest-sorted"
-import supertest from "supertest"
-import {app} from "../app"
-import db from "../db/connection"
+import "jest-sorted";
+import supertest from "supertest";
+import { app } from "../app";
+import db from "../db/connection";
 
 let server: any;
 beforeAll(async () => {
@@ -48,7 +48,7 @@ describe("get user by username", () => {
 
     expect(res.statusCode).toBe(404);
     expect(res.body.msg).toBe("User not found");
-    expect(res.body.token).not.toBeDefined()
+    expect(res.body.token).not.toBeDefined();
   });
 });
 
@@ -60,8 +60,8 @@ describe("create user", () => {
       password: "password",
     });
 
-    expect(res.statusCode).toBe(201)
-    expect(res.body.token).toBeDefined()
+    expect(res.statusCode).toBe(201);
+    expect(res.body.token).toBeDefined();
   });
 
   it("POST 409: Should return an error if user already exist", async () => {
@@ -71,42 +71,42 @@ describe("create user", () => {
       password: "password",
     });
 
-    expect(res.statusCode).toBe(409)
-    expect(res.body.msg).toBe("User already exists")
-    expect(res.body.token).not.toBeDefined()
+    expect(res.statusCode).toBe(409);
+    expect(res.body.msg).toBe("User already exists");
+    expect(res.body.token).not.toBeDefined();
   });
 });
 
-describe('sign in', () => {
-  it('POST 200; Should return a token when a valid user signs in', async () => {
+describe("sign in", () => {
+  it("POST 200; Should return a token when a valid user signs in", async () => {
     const res = await supertest(app).post("/api/users/signin").send({
       username: "test",
-      password: "password"
-    })
+      password: "password",
+    });
 
-    expect(res.statusCode).toBe(200)
-    expect(res.body.token).toBeDefined()
-  })
+    expect(res.statusCode).toBe(200);
+    expect(res.body.token).toBeDefined();
+  });
 
-  it('POST 404: Should return an error if the user does not exist', async () => {
+  it("POST 404: Should return an error if the user does not exist", async () => {
     const res = await supertest(app).post("/api/users/signin").send({
       username: "testerrrr",
-      password: "password"
-    })
+      password: "password",
+    });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("User not found")
-    expect(res.body.token).not.toBeDefined()
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("User not found");
+    expect(res.body.token).not.toBeDefined();
+  });
 
-  it('POST 409: Should return an error if the passwords do not match', async () => {
+  it("POST 409: Should return an error if the passwords do not match", async () => {
     const res = await supertest(app).post("/api/users/signin").send({
       username: "test",
-      password: "passwordss"
-    })
+      password: "passwordss",
+    });
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("Incorrect password")
-    expect(res.body.token).not.toBeDefined()
-  })
-})
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("Incorrect password");
+    expect(res.body.token).not.toBeDefined();
+  });
+});

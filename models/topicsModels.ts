@@ -1,17 +1,22 @@
-import db from "../db/connection"
+import { QueryResult } from "pg";
+import db from "../db/connection";
 
 export const getAllTopicsModel = async () => {
-  const topics = await db.query(`
+  const topics: QueryResult = await db.query(`
     SELECT * FROM topics;
   `);
 
   return topics.rows;
 };
 
-export const createTopicModel = async (slug: string, description: string, creator: string) => {
+export const createTopicModel = async (
+  slug: string,
+  description: string,
+  creator: string,
+) => {
   if (!slug || !description)
     return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
-  const topic = await db.query(
+  const topic: QueryResult = await db.query(
     `
     INSERT INTO topics (creator, slug, description)
     VALUES ($3, $1, $2) RETURNING *
@@ -23,22 +28,28 @@ export const createTopicModel = async (slug: string, description: string, creato
 };
 
 export const getActiveUsersInTopicModel = async (topic: string) => {
-  const checkTopic = await db.query(`
+  const checkTopic: QueryResult = await db.query(
+    `
   SELECT slug FROM topics WHERE slug = $1
-  `, [topic])
+  `,
+    [topic],
+  );
 
   if (checkTopic.rows.length < 1) {
-    return Promise.reject({errCode: 404, errMsg: "Topic not found"})
+    return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
   }
 
-  const users = await db.query(`
+  const users: QueryResult = await db.query(
+    `
   SELECT u.username, u.name, u.avatar_url
   FROM articles a
   JOIN users u
   ON a.author = u.username
   WHERE a.topic = $1
   GROUP BY u.username
-  `, [topic])
+  `,
+    [topic],
+  );
 
-  return users.rows
-}
+  return users.rows;
+};

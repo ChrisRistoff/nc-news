@@ -1,23 +1,26 @@
 import { NextFunction, Request, Response } from "express";
-import { hashPassword, createJWT } from "../middleware/authMiddleware"
+import { hashPassword, createJWT } from "../middleware/authMiddleware";
 import {
   getAllUsersModel,
   getUserByUsernameModel,
   createUserModel,
   signUserInModel,
-} from "../models/usersModel"
+} from "../models/usersModel";
 import { CustomRequest } from "../types/request";
 
-export const createUser = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const createUser = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { name, username, password, avatar_url } = req.body;
   const hashedPw = await hashPassword(password);
-
 
   try {
     const user = await createUserModel(username, name, hashedPw, avatar_url);
     const token = createJWT(user);
 
-    req.user = {username: user.username}
+    req.user = { username: user.username };
 
     res.status(201).send({ token });
   } catch (error) {
@@ -25,7 +28,11 @@ export const createUser = async (req: CustomRequest, res: Response, next: NextFu
   }
 };
 
-export const signUserIn = async (req: Request, res: Response, next: NextFunction) => {
+export const signUserIn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { username, password } = req.body;
 
   try {
@@ -39,7 +46,11 @@ export const signUserIn = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
+export const getAllUsers = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const users = await getAllUsersModel();
 
@@ -49,7 +60,11 @@ export const getAllUsers = async (_: Request, res: Response, next: NextFunction)
   }
 };
 
-export const getUserByUsername = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserByUsername = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { username } = req.params;
 
   try {
