@@ -7,9 +7,13 @@ import {
   updateCommentByIdModel,
   getAllCommentsForArticleModel,
   editCommentByIdModel,
-} from "../models/commentsModel"
+} from "../models/commentsModel";
 
-export const createCommentForArticle = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const createCommentForArticle = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { body } = req.body;
   const { article_id } = req.params;
   const { username } = req.user;
@@ -27,7 +31,11 @@ export const createCommentForArticle = async (req: CustomRequest, res: Response,
   }
 };
 
-export const getAllCommentsForArticle = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllCommentsForArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { article_id } = req.params;
   const { p, limit } = req.query;
 
@@ -40,7 +48,11 @@ export const getAllCommentsForArticle = async (req: Request, res: Response, next
   }
 };
 
-export const deleteCommentById = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const deleteCommentById = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { comment_id } = req.params;
   const { username } = req.user;
 
@@ -53,7 +65,11 @@ export const deleteCommentById = async (req: CustomRequest, res: Response, next:
   }
 };
 
-export const updateCommentById = async (req: Request, res: Response, next: NextFunction) => {
+export const updateCommentById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { comment_id } = req.params;
   const { inc_votes } = req.body;
 
@@ -66,7 +82,11 @@ export const updateCommentById = async (req: Request, res: Response, next: NextF
   }
 };
 
-export const editCommentById = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const editCommentById = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { comment_id } = req.params;
   const { body } = req.body;
   const { username } = req.user;

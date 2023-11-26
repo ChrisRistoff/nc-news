@@ -3,20 +3,28 @@ import {
   getAllTopicsModel,
   createTopicModel,
   getActiveUsersInTopicModel,
-} from "../models/topicsModels"
+} from "../models/topicsModels";
 import { CustomRequest } from "../types/request";
 
-export const getAllTopics = async (_: Request, res: Response, next: NextFunction) => {
+export const getAllTopics = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const topics = await getAllTopicsModel();
 
     res.status(200).send({ topics });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
-export const createTopic = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const createTopic = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { slug, description } = req.body;
   const creator = req.user.username;
 
@@ -29,7 +37,11 @@ export const createTopic = async (req: CustomRequest, res: Response, next: NextF
   }
 };
 
-export const getActiveUsersInTopic = async (req: Request, res: Response, next: NextFunction) => {
+export const getActiveUsersInTopic = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { topic } = req.params;
 
   try {

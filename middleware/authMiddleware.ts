@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken"
-import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { NextFunction, Response } from "express";
 import { CustomRequest } from "../types/request";
 
@@ -23,7 +23,11 @@ export const createJWT = (user: any) => {
   return token;
 };
 
-export const protect = (req: CustomRequest, res: Response, next: NextFunction) => {
+export const protect = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const bearer = req.headers.authorization;
 
   if (!bearer) {
@@ -33,17 +37,16 @@ export const protect = (req: CustomRequest, res: Response, next: NextFunction) =
   const split_token = bearer.split(" ");
   const token = split_token[1];
 
-
   if (!token) {
     return res.status(401).send({ msg: "Token is not valid" });
   }
 
   try {
-    const secret = process.env.JWT_SECRET
-    const user = jwt.verify(token, secret)
-    req.user = user
-    next()
+    const secret = process.env.JWT_SECRET;
+    const user = jwt.verify(token, secret);
+    req.user = user;
+    next();
   } catch (error) {
-    return res.status(401).send({msg: "Token is not valid"})
+    return res.status(401).send({ msg: "Token is not valid" });
   }
 };

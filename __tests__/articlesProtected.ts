@@ -1,9 +1,9 @@
-import "jest-sorted"
-import supertest from "supertest"
-import * as data from "../db/data/test-data/index"
-import {seed} from "../db/seeds/seed"
-import {app} from "../app"
-import db from "../db/connection"
+import "jest-sorted";
+import supertest from "supertest";
+import * as data from "../db/data/test-data/index";
+import { seed } from "../db/seeds/seed";
+import { app } from "../app";
+import db from "../db/connection";
 
 let token: any;
 let server: any;
@@ -269,74 +269,68 @@ describe("edit article body", () => {
     );
   });
 
-  it('PATCH 401: Should return an error when user is not signed in', async () => {
-     const res = await supertest(app)
-      .patch("/api/edit/articles/2")
-      .send({
-        body: "new test body",
-      });
+  it("PATCH 401: Should return an error when user is not signed in", async () => {
+    const res = await supertest(app).patch("/api/edit/articles/2").send({
+      body: "new test body",
+    });
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("You need to be logged in")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
 
-  it('PATCH 404: Should return an error article can not be found', async () => {
-     const res = await supertest(app)
+  it("PATCH 404: Should return an error article can not be found", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/articles/100")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "new test body",
       });
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Article ID not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Article ID not found");
+  });
 
-  it('PATCH 400: Should return an error when body is empty', async () => {
-     const res = await supertest(app)
+  it("PATCH 400: Should return an error when body is empty", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/articles/2")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "",
       });
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('PATCH 400: Should return an error when body is missing', async () => {
-     const res = await supertest(app)
+  it("PATCH 400: Should return an error when body is missing", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/articles/1")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-      });
+      .send({});
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('PATCH 400: Should return an error when article ID is invalid', async () => {
-     const res = await supertest(app)
+  it("PATCH 400: Should return an error when article ID is invalid", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/articles/asda")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-      });
+      .send({});
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('PATCH 400: Should return an error when article belongs to another user', async () => {
-     const res = await supertest(app)
+  it("PATCH 400: Should return an error when article belongs to another user", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/articles/4")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        body: "test body"
+        body: "test body",
       });
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("Article belongs to another user")
-  })
-
-
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("Article belongs to another user");
+  });
 });

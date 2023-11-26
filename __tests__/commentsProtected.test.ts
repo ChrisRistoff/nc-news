@@ -1,9 +1,9 @@
-import "jest-sorted"
-import supertest from "supertest"
-import * as data from "../db/data/test-data/index"
-import {seed} from "../db/seeds/seed"
-import {app} from "../app"
-import db from "../db/connection"
+import "jest-sorted";
+import supertest from "supertest";
+import * as data from "../db/data/test-data/index";
+import { seed } from "../db/seeds/seed";
+import { app } from "../app";
+import db from "../db/connection";
 
 let token: any;
 let server: any;
@@ -176,11 +176,11 @@ describe("edit comments", () => {
     const res = await supertest(app)
       .patch("/api/edit/comments/2")
       .send({
-        body: "edited test body"
+        body: "edited test body",
       })
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(200);
     const comment = res.body.comment;
 
     expect(comment.author).toBe("test");
@@ -189,61 +189,58 @@ describe("edit comments", () => {
     expect(comment).toHaveProperty("comment_id");
   });
 
-  it('PATCH 401: Should return an error when user is not signed in', async () => {
-     const res = await supertest(app)
-      .patch("/api/edit/comments/2")
-      .send({
-        body: "edited test body"
-      })
+  it("PATCH 401: Should return an error when user is not signed in", async () => {
+    const res = await supertest(app).patch("/api/edit/comments/2").send({
+      body: "edited test body",
+    });
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("You need to be logged in")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
 
-  it('PATCH 404: Should return an error comment ID is not found', async () => {
-     const res = await supertest(app)
+  it("PATCH 404: Should return an error comment ID is not found", async () => {
+    const res = await supertest(app)
       .patch("/api/edit/comments/1000")
       .send({
-        body: "edited test body"
+        body: "edited test body",
       })
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Comment ID not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Comment ID not found");
+  });
 
-  it('PATCH 401: Should return an error when comment belongs to another user', async () => {
+  it("PATCH 401: Should return an error when comment belongs to another user", async () => {
     const res = await supertest(app)
       .patch("/api/edit/comments/10")
       .send({
-        body: "edited test body"
+        body: "edited test body",
       })
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("Comment belongs to another user")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("Comment belongs to another user");
+  });
 
-  it('PATCH 400: Should return an error when body is empty', async () => {
+  it("PATCH 400: Should return an error when body is empty", async () => {
     const res = await supertest(app)
       .patch("/api/edit/comments/2")
       .send({
-        body: ""
+        body: "",
       })
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 
-  it('PATCH 400: Should return an error when body is missing', async () => {
+  it("PATCH 400: Should return an error when body is missing", async () => {
     const res = await supertest(app)
       .patch("/api/edit/comments/2")
-      .send({
-      })
+      .send({})
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 });

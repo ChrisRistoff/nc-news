@@ -1,8 +1,14 @@
-import db from "../db/connection"
-import { comparePassword } from "../middleware/authMiddleware"
+import { Query, QueryResult } from "pg";
+import db from "../db/connection";
+import { comparePassword } from "../middleware/authMiddleware";
 
-export const createUserModel = async (username: string, name: string, password: string, avatar_url: string) => {
-  const existingUser = await db.query(
+export const createUserModel = async (
+  username: string,
+  name: string,
+  password: string,
+  avatar_url: string,
+) => {
+  const existingUser: QueryResult = await db.query(
     `
   SELECT username FROM users WHERE username=$1
   `,
@@ -13,7 +19,7 @@ export const createUserModel = async (username: string, name: string, password: 
     return Promise.reject({ errCode: 409, errMsg: "User already exists" });
   }
 
-  let user
+  let user: QueryResult;
   if (avatar_url) {
     user = await db.query(
       `
@@ -24,7 +30,7 @@ export const createUserModel = async (username: string, name: string, password: 
     );
   } else {
     user = await db.query(
-    `
+      `
     INSERT INTO users (username, name, password)
     VALUES ($1, $2, $3) RETURNING *
     `,
@@ -36,7 +42,7 @@ export const createUserModel = async (username: string, name: string, password: 
 };
 
 export const signUserInModel = async (username: string, password: string) => {
-  const user = await db.query(
+  const user: QueryResult = await db.query(
     `
     SELECT * FROM users WHERE username=$1
   `,
@@ -47,7 +53,10 @@ export const signUserInModel = async (username: string, password: string) => {
     return Promise.reject({ errCode: 404, errMsg: "User not found" });
   }
 
-  const isValid = await comparePassword(password, user.rows[0].password);
+  const isValid: boolean = await comparePassword(
+    password,
+    user.rows[0].password,
+  );
 
   if (!isValid)
     return Promise.reject({ errCode: 401, errMsg: "Incorrect password" });
@@ -58,7 +67,7 @@ export const signUserInModel = async (username: string, password: string) => {
 };
 
 export const getAllUsersModel = async () => {
-  const users = await db.query(
+  const users: QueryResult = await db.query(
     `
   SELECT * FROM users;
   `,
@@ -72,7 +81,7 @@ export const getAllUsersModel = async () => {
 };
 
 export const getUserByUsernameModel = async (username: string) => {
-  const user = await db.query(
+  const user: QueryResult = await db.query(
     `
     SELECT * FROM users WHERE username=$1
     `,

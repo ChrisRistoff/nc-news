@@ -1,9 +1,9 @@
-import "jest-sorted"
-import supertest from "supertest"
-import * as data from "../db/data/test-data/index"
-import {seed} from "../db/seeds/seed"
-import {app} from "../app"
-import db from "../db/connection"
+import "jest-sorted";
+import supertest from "supertest";
+import * as data from "../db/data/test-data/index";
+import { seed } from "../db/seeds/seed";
+import { app } from "../app";
+import db from "../db/connection";
 
 let server: any;
 beforeAll(async () => {
@@ -365,4 +365,3 @@ describe("update article", () => {
     expect(res.body.msg).toBe("Invalid input for increment votes");
   });
 });
-
