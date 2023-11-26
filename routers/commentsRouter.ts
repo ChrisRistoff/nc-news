@@ -240,7 +240,7 @@ protectedCommentsRouter.delete(
  *         description: Comment ID not found
  */
 protectedCommentsRouter.patch(
-  "/edit/comments/:comment_id",
+  "/comments/:comment_id/edit",
   protect,
   editCommentById,
 );

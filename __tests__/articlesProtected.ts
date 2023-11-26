@@ -246,7 +246,7 @@ describe("delete article", () => {
 describe("edit article body", () => {
   it("PATCH 200: Should update article body and return the updated article", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/2")
+      .patch("/api/articles/2/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "new test body",
@@ -270,7 +270,7 @@ describe("edit article body", () => {
   });
 
   it("PATCH 401: Should return an error when user is not signed in", async () => {
-    const res = await supertest(app).patch("/api/edit/articles/2").send({
+    const res = await supertest(app).patch("/api/articles/2/edit").send({
       body: "new test body",
     });
 
@@ -280,7 +280,7 @@ describe("edit article body", () => {
 
   it("PATCH 404: Should return an error article can not be found", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/100")
+      .patch("/api/articles/100/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "new test body",
@@ -292,7 +292,7 @@ describe("edit article body", () => {
 
   it("PATCH 400: Should return an error when body is empty", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/2")
+      .patch("/api/articles/2/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "",
@@ -304,7 +304,7 @@ describe("edit article body", () => {
 
   it("PATCH 400: Should return an error when body is missing", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/1")
+      .patch("/api/articles/1/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({});
 
@@ -314,7 +314,7 @@ describe("edit article body", () => {
 
   it("PATCH 400: Should return an error when article ID is invalid", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/asda")
+      .patch("/api/articles/asda/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({});
 
@@ -324,7 +324,7 @@ describe("edit article body", () => {
 
   it("PATCH 400: Should return an error when article belongs to another user", async () => {
     const res = await supertest(app)
-      .patch("/api/edit/articles/4")
+      .patch("/api/articles/4/edit")
       .set("Authorization", `Bearer ${token}`)
       .send({
         body: "test body",
