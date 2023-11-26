@@ -1,5 +1,12 @@
 export const users = [
   {
+    username: 'test',
+    name: 'test',
+    password: "password",
+    avatar_url:
+      'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+  },
+  {
     username: 'tickle122',
     name: 'Tom Tickle',
     password: "password",
