@@ -61,6 +61,7 @@ app.use("/api", comments.protectedCommentsRouter);
 
 //replies
 app.use("/api", replies.repliesRouter)
+app.use("/api", replies.protectedRepliesRouter)
 
 //users
 app.use("/api", usersRouter);
