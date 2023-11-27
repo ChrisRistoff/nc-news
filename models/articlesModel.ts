@@ -187,7 +187,7 @@ export const deleteArticleModel = async (
 ) => {
   const checkArticle: QueryResult = await db.query(
     `
-  SELECT * FROM articles WHERE article_id = $1
+  SELECT author FROM articles WHERE article_id = $1
   `,
     [article_id],
   );
@@ -201,13 +201,6 @@ export const deleteArticleModel = async (
       errMsg: "Article belongs to another user",
     });
   }
-
-  await db.query(
-    `
-    DELETE FROM comments WHERE article_id = $1
-  `,
-    [article_id],
-  );
 
   await db.query(
     `

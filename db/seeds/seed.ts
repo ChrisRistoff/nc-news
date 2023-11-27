@@ -8,7 +8,9 @@ export const seed = async ({
   userData,
   articleData,
   commentData,
+  repliesData
 }) => {
+  await db.query(`DROP TABLE IF EXISTS replies;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
   await db.query(`DROP TABLE IF EXISTS topics;`);
@@ -45,10 +47,23 @@ export const seed = async ({
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
         body VARCHAR NOT NULL,
-        article_id INT REFERENCES articles(article_id) NOT NULL,
-        author VARCHAR REFERENCES users(username) NOT NULL,
+        article_id INT NOT NULL,
+        author VARCHAR NOT NULL,
         votes INT DEFAULT 0 NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW()
+        created_at TIMESTAMP DEFAULT NOW(),
+        FOREIGN KEY (author) REFERENCES users(username),
+        FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
+      );`);
+
+  await db.query(`
+      CREATE TABLE replies (
+        reply_id SERIAL PRIMARY KEY,
+        body VARCHAR NOT NULL,
+        author VARCHAR,
+        votes INT DEFAULT 0 NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        comment_id INTEGER NOT NULL,
+        FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE
       );`);
 
   const hashedUserData = await Promise.all(
@@ -107,5 +122,16 @@ export const seed = async ({
       ],
     ),
   );
-  return db.query(insertCommentsQueryStr);
+  await db.query(insertCommentsQueryStr);
+
+  const formattedRepliesData = repliesData.map(convertTimestampToDate)
+
+  for(let reply of formattedRepliesData) {
+    await db.query(`
+      INSERT INTO replies (body, comment_id, author, votes, created_at)
+      VALUES ($1, $2, $3, $4, $5)
+    `, [reply.body, reply.comment_id, reply.author, reply.votes, reply.created_at ])
+  }
+
+  return
 };

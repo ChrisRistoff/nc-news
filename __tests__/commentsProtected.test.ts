@@ -130,7 +130,7 @@ describe("delete comment", () => {
     expect(res.statusCode).toBe(204);
   });
 
-  it("POST 200, 204: Comment should be deleted", async () => {
+  it("DELETE 204: Comment should be deleted", async () => {
     const comments = await supertest(app).get("/api/articles/1/comments");
     expect(comments.statusCode).toBe(200);
 
