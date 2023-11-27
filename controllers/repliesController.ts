@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   createReplyModel,
   deleteReplyByIdModel,
+  editReplyBodyModel,
   getRepliesForCommentModel,
 } from "../models/repliesModel";
 import { CustomRequest } from "../types/request";
@@ -51,7 +52,25 @@ export const deleteReplyById = async (
   try {
     await deleteReplyByIdModel(reply_id, username);
 
-    res.status(204).send()
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const editReplyBody = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { reply_id } = req.params;
+  const { username } = req.user;
+  const { body } = req.body;
+
+  try {
+    const reply = await editReplyBodyModel(reply_id, username, body);
+
+    res.status(200).send({ reply });
   } catch (error) {
     next(error);
   }

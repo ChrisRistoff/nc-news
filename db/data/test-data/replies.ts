@@ -9,7 +9,7 @@ export const replies = [
   {
     "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
     "votes": 5,
-    "author": "grumpy19",
+    "author": "test",
     "comment_id": 13,
     "created_at": 1612137600000
   },

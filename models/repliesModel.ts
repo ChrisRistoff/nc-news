@@ -66,12 +66,46 @@ export const deleteReplyByIdModel = async (
   }
 
   if (reply.rows[0].author !== username) {
+    return Promise.reject({
+      errCode: 401,
+      errMsg: "Reply belongs to another user",
+    });
+  }
+
+  await db.query(
+    `
+  DELETE FROM replies WHERE reply_id=$1
+  `,
+    [reply_id],
+  );
+
+  return;
+};
+
+export const editReplyBodyModel = async (
+  reply_id: string,
+  author: string,
+  body: string,
+) => {
+
+  const reply = await db.query(`
+  SELECT author FROM replies where reply_id = $1
+  `, [reply_id])
+
+  if (reply.rows.length < 1) {
+    return Promise.reject({errCode: 404, errMsg: "Reply not found"})
+  }
+
+  if(reply.rows[0].author !== author) {
     return Promise.reject({errCode: 401, errMsg: "Reply belongs to another user"})
   }
 
-  await db.query(`
-  DELETE FROM replies WHERE reply_id=$1
-  `, [reply_id])
+  const newReply = await db.query(`
+  UPDATE replies
+  SET body = $1
+  WHERE reply_id = $2
+  RETURNING *
+  `, [body, reply_id])
 
-  return
+  return newReply.rows[0]
 };

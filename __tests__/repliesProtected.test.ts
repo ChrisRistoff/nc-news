@@ -99,55 +99,138 @@ describe("create replies", () => {
 });
 
 describe("delete reply", () => {
-
   it("DELETE 204: Should delete reply", async () => {
     const res = await supertest(app)
       .delete("/api/replies/1")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(204)
+    expect(res.statusCode).toBe(204);
 
     const replies = await supertest(app)
       .get("/api/comments/1/replies")
       .set("Authorization", `Bearer ${token}`);
 
     for (const reply of replies.body.replies) {
-      expect(reply.reply_id).not.toBe(1)
+      expect(reply.reply_id).not.toBe(1);
     }
   });
 
-  it('DELETE 401: Should return an error when user is not signed in', async () => {
-     const res = await supertest(app)
-      .delete("/api/replies/1")
+  it("DELETE 401: Should return an error when user is not signed in", async () => {
+    const res = await supertest(app).delete("/api/replies/1");
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("You need to be logged in")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
 
-  it('DELETE 401: Should return an error when reply belongs to another user', async () => {
-     const res = await supertest(app)
+  it("DELETE 401: Should return an error when reply belongs to another user", async () => {
+    const res = await supertest(app)
       .delete("/api/replies/12")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(401)
-    expect(res.body.msg).toBe("Reply belongs to another user")
-  })
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("Reply belongs to another user");
+  });
 
-  it('DELETE 404: Should return an error when reply is not found', async () => {
-     const res = await supertest(app)
+  it("DELETE 404: Should return an error when reply is not found", async () => {
+    const res = await supertest(app)
       .delete("/api/replies/12212")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(404)
-    expect(res.body.msg).toBe("Reply not found")
-  })
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Reply not found");
+  });
 
-  it('DELETE 400: Should return an error when reply ID is not valid', async () => {
-     const res = await supertest(app)
+  it("DELETE 400: Should return an error when reply ID is not valid", async () => {
+    const res = await supertest(app)
       .delete("/api/replies/sads")
       .set("Authorization", `Bearer ${token}`);
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body.msg).toBe("Invalid input")
-  })
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+});
+
+describe("edit reply body", () => {
+  it("PATCH 200: Should update reply's body", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/2")
+      .send({
+        body: "asdasdasd",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    const reply = res.body.reply;
+
+    expect(reply.author).toBe("test");
+    expect(reply.reply_id).toBe(2);
+    expect(reply.body).toBe("asdasdasd");
+  });
+
+  it("PATCH 401: Should return an error when user is not signed in", async () => {
+    const res = await supertest(app).patch("/api/replies/2").send({
+      body: "asdasdas",
+    });
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("You need to be logged in");
+  });
+
+  it("PATCH 401: Should return an error when user is not the author", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/6")
+      .send({
+        body: "asdasdas",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(401);
+    expect(res.body.msg).toBe("Reply belongs to another user");
+  });
+
+  it("PATCH 404: Should return an error when reply is not found", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/6212")
+      .send({
+        body: "asdasdas",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body.msg).toBe("Reply not found");
+  });
+
+  it("PATCH 400: Should return an error when reply is not valid", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/sda")
+      .send({
+        body: "asdasdas",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+
+  it("PATCH 400: Should return an error when body is empty", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/sda")
+      .send({
+        body: "",
+      })
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
+
+  it("PATCH 400: Should return an error when body is missing", async () => {
+    const res = await supertest(app)
+      .patch("/api/replies/sda")
+      .send({})
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body.msg).toBe("Invalid input");
+  });
 });
