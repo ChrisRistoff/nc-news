@@ -23,7 +23,7 @@ describe('get replies', () => {
 
     expect(res.statusCode).toBe(200)
 
-    expect(res.body.replies.length).toBe(3)
+    expect(res.body.replies.length).toBe(4)
 
     for(let reply of res.body.replies) {
       expect(reply.comment_id).toBe(1)

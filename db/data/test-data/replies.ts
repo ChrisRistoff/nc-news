@@ -2,8 +2,8 @@ export const replies = [
   {
     "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.",
     "votes": 2,
-    "author": "tickle122",
-    "comment_id": 12,
+    "author": "test",
+    "comment_id": 1,
     "created_at": 1609459200000
   },
   {

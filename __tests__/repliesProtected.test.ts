@@ -97,3 +97,57 @@ describe("create replies", () => {
     expect(res.body.msg).toBe("Invalid input");
   });
 });
+
+describe("delete reply", () => {
+
+  it("DELETE 204: Should delete reply", async () => {
+    const res = await supertest(app)
+      .delete("/api/replies/1")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(204)
+
+    const replies = await supertest(app)
+      .get("/api/comments/1/replies")
+      .set("Authorization", `Bearer ${token}`);
+
+    for (const reply of replies.body.replies) {
+      expect(reply.reply_id).not.toBe(1)
+    }
+  });
+
+  it('DELETE 401: Should return an error when user is not signed in', async () => {
+     const res = await supertest(app)
+      .delete("/api/replies/1")
+
+    expect(res.statusCode).toBe(401)
+    expect(res.body.msg).toBe("You need to be logged in")
+  })
+
+  it('DELETE 401: Should return an error when reply belongs to another user', async () => {
+     const res = await supertest(app)
+      .delete("/api/replies/12")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(401)
+    expect(res.body.msg).toBe("Reply belongs to another user")
+  })
+
+  it('DELETE 404: Should return an error when reply is not found', async () => {
+     const res = await supertest(app)
+      .delete("/api/replies/12212")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(404)
+    expect(res.body.msg).toBe("Reply not found")
+  })
+
+  it('DELETE 400: Should return an error when reply ID is not valid', async () => {
+     const res = await supertest(app)
+      .delete("/api/replies/sads")
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(400)
+    expect(res.body.msg).toBe("Invalid input")
+  })
+});
