@@ -153,7 +153,7 @@ describe("delete reply", () => {
 describe("edit reply body", () => {
   it("PATCH 200: Should update reply's body", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/2")
+      .patch("/api/replies/2/edit")
       .send({
         body: "asdasdasd",
       })
@@ -168,7 +168,7 @@ describe("edit reply body", () => {
   });
 
   it("PATCH 401: Should return an error when user is not signed in", async () => {
-    const res = await supertest(app).patch("/api/replies/2").send({
+    const res = await supertest(app).patch("/api/replies/2/edit").send({
       body: "asdasdas",
     });
 
@@ -178,7 +178,7 @@ describe("edit reply body", () => {
 
   it("PATCH 401: Should return an error when user is not the author", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/6")
+      .patch("/api/replies/6/edit")
       .send({
         body: "asdasdas",
       })
@@ -190,7 +190,7 @@ describe("edit reply body", () => {
 
   it("PATCH 404: Should return an error when reply is not found", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/6212")
+      .patch("/api/replies/6212/edit")
       .send({
         body: "asdasdas",
       })
@@ -202,7 +202,7 @@ describe("edit reply body", () => {
 
   it("PATCH 400: Should return an error when reply is not valid", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/sda")
+      .patch("/api/replies/sda/edit")
       .send({
         body: "asdasdas",
       })
@@ -214,7 +214,7 @@ describe("edit reply body", () => {
 
   it("PATCH 400: Should return an error when body is empty", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/sda")
+      .patch("/api/replies/sda/edit")
       .send({
         body: "",
       })
@@ -226,7 +226,7 @@ describe("edit reply body", () => {
 
   it("PATCH 400: Should return an error when body is missing", async () => {
     const res = await supertest(app)
-      .patch("/api/replies/sda")
+      .patch("/api/replies/sda/edit")
       .send({})
       .set("Authorization", `Bearer ${token}`);
 

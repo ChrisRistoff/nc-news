@@ -1,7 +1,8 @@
+import { QueryResult } from "pg";
 import db from "../db/connection";
 
 export const getRepliesForCommentModel = async (comment_id: string) => {
-  const comment = await db.query(
+  const comment: QueryResult = await db.query(
     `
   SELECT comment_id FROM comments WHERE comment_id = $1
   `,
@@ -12,7 +13,7 @@ export const getRepliesForCommentModel = async (comment_id: string) => {
     return Promise.reject({ errCode: 404, errMsg: "Comment not found" });
   }
 
-  const replies = await db.query(
+  const replies: QueryResult = await db.query(
     `
   SELECT * FROM replies WHERE comment_id = $1
   `,
@@ -28,7 +29,7 @@ export const createReplyModel = async (
   body: string,
 ) => {
   if (!body) return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
-  const comment = await db.query(
+  const comment: QueryResult = await db.query(
     `
   SELECT comment_id FROM comments WHERE comment_id=$1
   `,
@@ -39,7 +40,7 @@ export const createReplyModel = async (
     return Promise.reject({ errCode: 404, errMsg: "Comment not found" });
   }
 
-  const reply = await db.query(
+  const reply: QueryResult = await db.query(
     `
   INSERT INTO replies (body, author, comment_id)
   VALUES ($1, $2, $3) RETURNING *
@@ -54,7 +55,7 @@ export const deleteReplyByIdModel = async (
   reply_id: string,
   username: string,
 ) => {
-  const reply = await db.query(
+  const reply: QueryResult = await db.query(
     `
   SELECT author FROM replies WHERE reply_id=$1
   `,
@@ -88,7 +89,7 @@ export const editReplyBodyModel = async (
   body: string,
 ) => {
 
-  const reply = await db.query(`
+  const reply: QueryResult = await db.query(`
   SELECT author FROM replies where reply_id = $1
   `, [reply_id])
 
@@ -100,7 +101,7 @@ export const editReplyBodyModel = async (
     return Promise.reject({errCode: 401, errMsg: "Reply belongs to another user"})
   }
 
-  const newReply = await db.query(`
+  const newReply: QueryResult = await db.query(`
   UPDATE replies
   SET body = $1
   WHERE reply_id = $2
@@ -109,3 +110,34 @@ export const editReplyBodyModel = async (
 
   return newReply.rows[0]
 };
+
+export const updateReplyVoteModel = async (reply_id: string, inc_votes: string) => {
+   if (isNaN(+inc_votes)) {
+    return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
+  }
+
+  const reply: QueryResult = await db.query(
+    `
+    SELECT votes FROM replies WHERE reply_id = $1
+  `,
+    [reply_id],
+  );
+
+  if (reply.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "Reply not found" });
+
+  const newVotes: number = reply.rows[0].votes + +inc_votes;
+
+  const newReply: QueryResult = await db.query(
+    `
+    UPDATE replies
+    SET votes = $2
+    WHERE reply_id = $1
+    RETURNING *
+    `,
+    [reply_id, newVotes],
+  );
+
+  return newReply.rows[0];
+
+}
