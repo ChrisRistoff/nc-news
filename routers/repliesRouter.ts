@@ -17,7 +17,7 @@ export const protectedRepliesRouter = Router()
  *         comment_id:
  *           type: integer
  *         reply_id:
- *           type: string
+ *           type: integer
  *         created_at:
  *           type: string
  *           format: date-time
