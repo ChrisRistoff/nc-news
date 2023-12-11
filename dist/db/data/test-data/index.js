@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.repliesData = exports.userData = exports.topicData = exports.commentData = exports.articleData = void 0;
+const articles_1 = require("./articles");
+const comments_1 = require("./comments");
+const topics_1 = require("./topics");
+const users_1 = require("./users");
+const replies_1 = require("./replies");
+exports.articleData = articles_1.articles;
+exports.commentData = comments_1.comments;
+exports.topicData = topics_1.topics;
+exports.userData = users_1.users;
+exports.repliesData = replies_1.replies;
