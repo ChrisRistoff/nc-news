@@ -2,7 +2,7 @@ import express from "express";
 import * as topic from "./routers/topicsRouter";
 import * as articles from "./routers/articlesRouter";
 import * as comments from "./routers/commentsRouter";
-import * as replies from "./routers/repliesRouter"
+import * as replies from "./routers/repliesRouter";
 import { usersRouter } from "./routers/usersRouter";
 import {
   sqlErrors,
@@ -11,9 +11,12 @@ import {
 } from "./middleware/errorHandlers";
 import { getDocs } from "./documentation/docController";
 import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express"
+import swaggerUi from "swagger-ui-express";
+import cors from "cors";
 
 export const app = express();
+
+app.use(cors());
 
 const options = {
   definition: {

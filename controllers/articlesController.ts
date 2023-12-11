@@ -8,23 +8,27 @@ import {
   updateArticleBodyModel,
 } from "../models/articlesModel";
 import { CustomRequest } from "../types/request";
-
 export const getAllArticles = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  const { topic, order, sort_by, p, limit } = req.query;
+  const {
+    topic,
+    order,
+    sort_by,
+    p,
+    limit
+  }= req.query;
 
   try {
-    const result = await getAllArticlesModel(topic, order, sort_by, p, limit);
+    const result= await getAllArticlesModel(topic, order, sort_by, p, limit);
 
     res.status(200).send({ articles: result[0], total_count: result[1] });
   } catch (error) {
     next(error);
   }
 };
-
 export const getArticleById = async (
   req: Request,
   res: Response,
@@ -40,6 +44,7 @@ export const getArticleById = async (
     next(error);
   }
 };
+
 
 export const updateArticleById = async (
   req: Request,
