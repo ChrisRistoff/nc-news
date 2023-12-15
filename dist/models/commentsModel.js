@@ -44,7 +44,9 @@ const getAllCommentsForArticleModel = (article_id, p, limit) => __awaiter(void 0
     if (!dbQuery)
         return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
     const comments = yield connection_1.default.query(dbQuery, [article_id]);
-    return comments.rows;
+    let total_count = yield connection_1.default.query(`SELECT CAST(COUNT(comment_id) AS INTEGER) as total_count FROM comments WHERE article_id = $1`, [article_id]);
+    total_count = total_count.rows[0].total_count;
+    return [comments.rows, total_count];
 });
 exports.getAllCommentsForArticleModel = getAllCommentsForArticleModel;
 const deleteCommentByIdModel = (comment_id, username) => __awaiter(void 0, void 0, void 0, function* () {

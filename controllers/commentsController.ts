@@ -42,7 +42,7 @@ export const getAllCommentsForArticle = async (
   try {
     const comments = await getAllCommentsForArticleModel(article_id, p, limit);
 
-    res.status(200).send({ comments });
+    res.status(200).send({ comments: comments[0], total_count: comments[1] });
   } catch (error) {
     next(error);
   }

@@ -51,7 +51,13 @@ export const getAllCommentsForArticleModel = async (
 
   const comments: QueryResult = await db.query(dbQuery, [article_id]);
 
-  return comments.rows;
+  let total_count: QueryResult = await db.query(
+    `SELECT CAST(COUNT(comment_id) AS INTEGER) as total_count FROM comments WHERE article_id = $1`
+    , [article_id])
+
+  total_count = total_count.rows[0].total_count;
+
+  return [comments.rows, total_count];
 };
 
 export const deleteCommentByIdModel = async (

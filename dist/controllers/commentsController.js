@@ -29,7 +29,7 @@ const getAllCommentsForArticle = (req, res, next) => __awaiter(void 0, void 0, v
     const { p, limit } = req.query;
     try {
         const comments = yield (0, commentsModel_1.getAllCommentsForArticleModel)(article_id, p, limit);
-        res.status(200).send({ comments });
+        res.status(200).send({ comments: comments[0], total_count: comments[1] });
     }
     catch (error) {
         next(error);
