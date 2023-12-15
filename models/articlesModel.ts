@@ -77,9 +77,17 @@ export const getAllArticlesModel = async (
   if (topic) articles = await db.query(dbQuery, [topic]);
   else articles = await db.query(dbQuery);
 
-  let total_count: QueryResult = await db.query(
-    `SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles;`,
-  );
+  let total_countQuery: string = `
+    SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles
+  `;
+  let total_count: QueryResult;
+
+  if (topic) {
+    total_countQuery += `WHERE topic = $1`;
+    total_count = await db.query(total_countQuery, [topic]);
+  } else {
+    total_count = await db.query(total_countQuery);
+  }
 
   total_count = total_count.rows[0].total_count;
 

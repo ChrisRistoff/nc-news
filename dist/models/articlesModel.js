@@ -76,7 +76,17 @@ const getAllArticlesModel = (topic, order, sort_by, p, limit) => __awaiter(void 
         articles = yield connection_1.default.query(dbQuery, [topic]);
     else
         articles = yield connection_1.default.query(dbQuery);
-    let total_count = yield connection_1.default.query(`SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles;`);
+    let total_countQuery = `
+    SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles
+  `;
+    let total_count;
+    if (topic) {
+        total_countQuery += `WHERE topic = $1`;
+        total_count = yield connection_1.default.query(total_countQuery, [topic]);
+    }
+    else {
+        total_count = yield connection_1.default.query(total_countQuery);
+    }
     total_count = total_count.rows[0].total_count;
     return [articles.rows, total_count];
 });
