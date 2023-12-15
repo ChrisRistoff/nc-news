@@ -83,11 +83,13 @@ export const getUserArticles = async (
   next: NextFunction,
 ) => {
   const { username } = req.params;
+  let p: any;
+  ({p} = req.query);
 
   try {
-    const articles = await getUserArticlesModel(username);
+    const data = await getUserArticlesModel(username, p);
 
-    res.status(200).send({ articles });
+    res.status(200).send({ articles: data[0], total_count: data[1] });
   } catch (error) {
     next(error);
   }
@@ -99,11 +101,13 @@ export const getUserComments = async (
   next: NextFunction,
 ) => {
   const { username } = req.params;
+  let p: any;
+  ({p} = req.query);
 
   try {
-    const comments = await getUserCommentsModel(username);
+    const data = await getUserCommentsModel(username, p);
 
-    res.status(200).send({ comments });
+    res.status(200).send({ comments: data[0], total_count: data[1]});
   } catch (error) {
     next(error);
   }

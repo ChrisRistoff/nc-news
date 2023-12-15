@@ -104,7 +104,7 @@ describe("sign in", () => {
 });
 describe("get all articles for a user", () => {
     it("GET 200: Should return an array of all articles for a user", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/test/articles");
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/test/articles?p=1");
         const articles = res.body.articles;
         expect(res.statusCode).toBe(200);
         expect(Array.isArray(articles)).toBe(true);
@@ -119,7 +119,7 @@ describe("get all articles for a user", () => {
         expect(articles[0].author).toBe("test");
     }));
     it("GET 404: Should return an error when user is not found", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/asdasdasd/articles");
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/asdasdasd/articles?p=1");
         expect(res.statusCode).toBe(404);
         expect(res.body.msg).toBe("User not found");
         expect(res.body.token).not.toBeDefined();
@@ -127,7 +127,7 @@ describe("get all articles for a user", () => {
 });
 describe("get all comments for a user", () => {
     it("GET 200: Should return an array of all comments for a user", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/test/comments");
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/test/comments?p=1");
         const comments = res.body.comments;
         expect(res.statusCode).toBe(200);
         expect(Array.isArray(comments)).toBe(true);

@@ -113,7 +113,7 @@ describe("sign in", () => {
 
 describe("get all articles for a user", () => {
   it("GET 200: Should return an array of all articles for a user", async () => {
-    const res = await supertest(app).get("/api/users/test/articles");
+    const res = await supertest(app).get("/api/users/test/articles?p=1");
 
     const articles = res.body.articles;
 
@@ -133,7 +133,7 @@ describe("get all articles for a user", () => {
   });
 
   it("GET 404: Should return an error when user is not found", async () => {
-    const res = await supertest(app).get("/api/users/asdasdasd/articles");
+    const res = await supertest(app).get("/api/users/asdasdasd/articles?p=1");
 
     expect(res.statusCode).toBe(404);
     expect(res.body.msg).toBe("User not found");
@@ -143,7 +143,7 @@ describe("get all articles for a user", () => {
 
 describe("get all comments for a user", () => {
   it("GET 200: Should return an array of all comments for a user", async () => {
-    const res = await supertest(app).get("/api/users/test/comments");
+    const res = await supertest(app).get("/api/users/test/comments?p=1");
 
     const comments = res.body.comments;
 
@@ -165,7 +165,7 @@ describe("get all comments for a user", () => {
   })
 
   it("GET 404: Should return an error when user is not found", async () => {
-    const res = await supertest(app).get("/api/users/asdasdasd/comments");
+    const res = await supertest(app).get("/api/users/asdasdasd/comments?p=1");
 
     expect(res.statusCode).toBe(404);
     expect(res.body.msg).toBe("User not found");

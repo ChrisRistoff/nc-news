@@ -61,9 +61,11 @@ const getUserByUsername = (req, res, next) => __awaiter(void 0, void 0, void 0, 
 exports.getUserByUsername = getUserByUsername;
 const getUserArticles = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
+    let p;
+    ({ p } = req.query);
     try {
-        const articles = yield (0, usersModel_1.getUserArticlesModel)(username);
-        res.status(200).send({ articles });
+        const data = yield (0, usersModel_1.getUserArticlesModel)(username, p);
+        res.status(200).send({ articles: data[0], total_count: data[1] });
     }
     catch (error) {
         next(error);
@@ -72,9 +74,11 @@ const getUserArticles = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
 exports.getUserArticles = getUserArticles;
 const getUserComments = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
+    let p;
+    ({ p } = req.query);
     try {
-        const comments = yield (0, usersModel_1.getUserCommentsModel)(username);
-        res.status(200).send({ comments });
+        const data = yield (0, usersModel_1.getUserCommentsModel)(username, p);
+        res.status(200).send({ comments: data[0], total_count: data[1] });
     }
     catch (error) {
         next(error);

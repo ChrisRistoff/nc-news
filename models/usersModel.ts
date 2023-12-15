@@ -97,7 +97,9 @@ export const getUserByUsernameModel = async (username: string) => {
   return user.rows[0];
 };
 
-export const getUserArticlesModel = async (username: string) => {
+export const getUserArticlesModel = async (username: string, p: string) => {
+  const limit: number = 5;
+  const offset: number = (+p - 1) * limit;
   const user: QueryResult = await db.query(`
     SELECT username FROM users WHERE username=$1`, [username]);
 
@@ -105,13 +107,21 @@ export const getUserArticlesModel = async (username: string) => {
     return Promise.reject({ errCode: 404, errMsg: "User not found" });
 
   const articles: QueryResult = await db.query(`
-    SELECT * FROM articles WHERE author=$1`, [username],
+    SELECT * FROM articles WHERE author=$1
+    LIMIT 5 OFFSET $2
+    `, [username, offset],
   );
 
-  return articles.rows;
+  const total_count: QueryResult = await db.query(
+    `SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles WHERE author = $1`
+    , [username])
+
+  return [articles.rows, total_count.rows[0].total_count];
 }
 
-export const getUserCommentsModel = async (username: string) => {
+export const getUserCommentsModel = async (username: string, p: string ) => {
+  const limit: number = 5;
+  const offset: number = (+p - 1) * limit;
   const user: QueryResult = await db.query(`
     SELECT username FROM users WHERE username=$1`, [username]);
 
@@ -123,8 +133,13 @@ export const getUserCommentsModel = async (username: string) => {
     JOIN articles a ON c.article_id = a.article_id
     WHERE c.author=$1
     ORDER BY c.created_at DESC
-  `, [username]
+    LIMIT 5 OFFSET $2
+  `, [username, offset]
   );
 
-  return comments.rows;
+  let total_count: QueryResult = await db.query(
+    `SELECT CAST(COUNT(comment_id) AS INTEGER) as total_count FROM comments WHERE author = $1`
+    , [username])
+
+  return [comments.rows, total_count.rows[0].total_count];
 }

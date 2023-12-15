@@ -72,17 +72,24 @@ const getUserByUsernameModel = (username) => __awaiter(void 0, void 0, void 0, f
     return user.rows[0];
 });
 exports.getUserByUsernameModel = getUserByUsernameModel;
-const getUserArticlesModel = (username) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserArticlesModel = (username, p) => __awaiter(void 0, void 0, void 0, function* () {
+    const limit = 5;
+    const offset = (+p - 1) * limit;
     const user = yield connection_1.default.query(`
     SELECT username FROM users WHERE username=$1`, [username]);
     if (user.rows.length < 1)
         return Promise.reject({ errCode: 404, errMsg: "User not found" });
     const articles = yield connection_1.default.query(`
-    SELECT * FROM articles WHERE author=$1`, [username]);
-    return articles.rows;
+    SELECT * FROM articles WHERE author=$1
+    LIMIT 5 OFFSET $2
+    `, [username, offset]);
+    const total_count = yield connection_1.default.query(`SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles WHERE author = $1`, [username]);
+    return [articles.rows, total_count.rows[0].total_count];
 });
 exports.getUserArticlesModel = getUserArticlesModel;
-const getUserCommentsModel = (username) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserCommentsModel = (username, p) => __awaiter(void 0, void 0, void 0, function* () {
+    const limit = 5;
+    const offset = (+p - 1) * limit;
     const user = yield connection_1.default.query(`
     SELECT username FROM users WHERE username=$1`, [username]);
     if (user.rows.length < 1)
@@ -92,7 +99,9 @@ const getUserCommentsModel = (username) => __awaiter(void 0, void 0, void 0, fun
     JOIN articles a ON c.article_id = a.article_id
     WHERE c.author=$1
     ORDER BY c.created_at DESC
-  `, [username]);
-    return comments.rows;
+    LIMIT 5 OFFSET $2
+  `, [username, offset]);
+    let total_count = yield connection_1.default.query(`SELECT CAST(COUNT(comment_id) AS INTEGER) as total_count FROM comments WHERE author = $1`, [username]);
+    return [comments.rows, total_count.rows[0].total_count];
 });
 exports.getUserCommentsModel = getUserCommentsModel;
