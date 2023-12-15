@@ -21,7 +21,7 @@ export const seed = async ({
         username VARCHAR PRIMARY KEY,
         name VARCHAR NOT NULL,
         password VARCHAR NOT NULL,
-        avatar_url VARCHAR DEFAULT 'https://avatars.dicebear.com/api/adventurer-neutral/mail%40ashallendesign.co.uk.svg'
+        avatar_url VARCHAR DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
       );`);
 
   await db.query(`

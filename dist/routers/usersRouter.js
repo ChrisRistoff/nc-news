@@ -152,3 +152,67 @@ exports.usersRouter.post("/users/signin", usersController_1.signUserIn);
  *         description: User already exists
  */
 exports.usersRouter.post("/users/signup", usersController_1.createUser);
+/**
+ * @swagger
+ * /api/users/{username}/articles:
+ *   get:
+ *     summary: Retrieves all articles by a specific user
+ *     description: Provides a list of all articles created by a specific user.
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The username of the user whose articles are to be retrieved
+ *     responses:
+ *       200:
+ *         description: A list of articles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 articles:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Article'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+exports.usersRouter.get("/users/:username/articles", usersController_1.getUserArticles);
+/**
+ * @swagger
+ * /api/users/{username}/comments:
+ *   get:
+ *     summary: Retrieves all comments by a specific user
+ *     description: Provides a list of all comments created by a specific user.
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: username
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The username of the user whose comments are to be retrieved
+ *     responses:
+ *       200:
+ *         description: A list of comments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 comments:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Comment'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+exports.usersRouter.get("/users/:username/comments", usersController_1.getUserComments);

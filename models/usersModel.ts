@@ -1,6 +1,7 @@
 import { Query, QueryResult } from "pg";
 import db from "../db/connection";
 import { comparePassword } from "../middleware/authMiddleware";
+import exp from "node:constants";
 
 export const createUserModel = async (
   username: string,
@@ -95,3 +96,35 @@ export const getUserByUsernameModel = async (username: string) => {
 
   return user.rows[0];
 };
+
+export const getUserArticlesModel = async (username: string) => {
+  const user: QueryResult = await db.query(`
+    SELECT username FROM users WHERE username=$1`, [username]);
+
+  if (user.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "User not found" });
+
+  const articles: QueryResult = await db.query(`
+    SELECT * FROM articles WHERE author=$1`, [username],
+  );
+
+  return articles.rows;
+}
+
+export const getUserCommentsModel = async (username: string) => {
+  const user: QueryResult = await db.query(`
+    SELECT username FROM users WHERE username=$1`, [username]);
+
+  if (user.rows.length < 1)
+    return Promise.reject({ errCode: 404, errMsg: "User not found" });
+
+  const comments: QueryResult = await db.query(`
+    SELECT c.*, a.title as article_title, a.article_id FROM comments c
+    JOIN articles a ON c.article_id = a.article_id
+    WHERE c.author=$1
+    ORDER BY c.created_at DESC
+  `, [username]
+  );
+
+  return comments.rows;
+}

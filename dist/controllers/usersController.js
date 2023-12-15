@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByUsername = exports.getAllUsers = exports.signUserIn = exports.createUser = void 0;
+exports.getUserComments = exports.getUserArticles = exports.getUserByUsername = exports.getAllUsers = exports.signUserIn = exports.createUser = void 0;
 const authMiddleware_1 = require("../middleware/authMiddleware");
 const usersModel_1 = require("../models/usersModel");
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -59,3 +59,25 @@ const getUserByUsername = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.getUserByUsername = getUserByUsername;
+const getUserArticles = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = req.params;
+    try {
+        const articles = yield (0, usersModel_1.getUserArticlesModel)(username);
+        res.status(200).send({ articles });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getUserArticles = getUserArticles;
+const getUserComments = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = req.params;
+    try {
+        const comments = yield (0, usersModel_1.getUserCommentsModel)(username);
+        res.status(200).send({ comments });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getUserComments = getUserComments;
