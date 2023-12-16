@@ -144,7 +144,7 @@ describe("get all comments for a user", () => {
         expect(comments[0].author).toBe("test");
     }));
     it("GET 404: Should return an error when user is not found", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/asdasdasd/comments");
+        const res = yield (0, supertest_1.default)(app_1.app).get("/api/users/asdasdasd/comments?p=1");
         expect(res.statusCode).toBe(404);
         expect(res.body.msg).toBe("User not found");
         expect(res.body.token).not.toBeDefined();

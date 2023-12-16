@@ -26,8 +26,10 @@ const sortBy = new Set([
     "comment_count",
     "article_id",
 ]);
-const getAllArticlesModel = (topic, order, sort_by, p, limit) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllArticlesModel = (topic, order, sort_by, p, limit, search) => __awaiter(void 0, void 0, void 0, function* () {
     let dbQuery;
+    search = search ? `%${search}%` : null;
+    const params = [];
     dbQuery = `
     SELECT
       a.author,
@@ -41,13 +43,24 @@ const getAllArticlesModel = (topic, order, sort_by, p, limit) => __awaiter(void 
     FROM articles a
     LEFT JOIN comments c
     ON c.article_id = a.article_id
+
   `;
+    if (search) {
+        dbQuery += `
+    WHERE a.title ILIKE $1
+    OR a.body ILIKE $1
+    OR a.topic ILIKE $1
+    OR a.author ILIKE $1`;
+        params.push(search);
+    }
     if (topic) {
         const checkTopic = yield connection_1.default.query(`SELECT slug FROM topics WHERE slug = $1`, [topic]);
         if (checkTopic.rows.length < 1)
             return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
-        dbQuery += `WHERE topic = $1`;
+        dbQuery += search ? `AND topic = $2` : `WHERE topic = $1`;
+        params.push(topic);
     }
+    dbQuery += `GROUP BY a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url`;
     if (sort_by) {
         if (!sortBy.has(sort_by))
             return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
@@ -65,28 +78,32 @@ const getAllArticlesModel = (topic, order, sort_by, p, limit) => __awaiter(void 
         order = "DESC";
     }
     dbQuery += `
-    GROUP BY a.article_id
     ORDER BY ${sort_by} ${order.toUpperCase()}
     `;
     dbQuery = (0, paginate_1.paginateQuery)(dbQuery, p, limit);
     if (!dbQuery)
         return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
     let articles;
-    if (topic)
-        articles = yield connection_1.default.query(dbQuery, [topic]);
-    else
-        articles = yield connection_1.default.query(dbQuery);
+    articles = yield connection_1.default.query(dbQuery, params);
     let total_countQuery = `
     SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles
   `;
     let total_count;
-    if (topic) {
-        total_countQuery += `WHERE topic = $1`;
-        total_count = yield connection_1.default.query(total_countQuery, [topic]);
-    }
-    else {
-        total_count = yield connection_1.default.query(total_countQuery);
-    }
+    total_countQuery += search ? `WHERE (title ILIKE $1 OR body ILIKE $1 OR topic ILIKE $1 OR author ILIKE $1)` : ``;
+    total_countQuery += topic && search ? `AND topic = $2` : topic ? `WHERE topic = $1` : ``;
+    const totalCountParams = search ? [search] : [];
+    if (topic)
+        totalCountParams.push(topic);
+    total_count = yield connection_1.default.query(total_countQuery, totalCountParams);
+    /*
+      if (topic) {
+        total_countQuery += !search ? `WHERE topic = $1 AND (title ILIKE $2 OR body ILIKE $2 OR topic ILIKE $2 OR author ILIKE $2)`;
+        total_count = await db.query(total_countQuery, params);
+      }
+      else {
+        total_countQuery += `WHERE (title ILIKE $1 OR body ILIKE $1 OR topic ILIKE $1 OR author ILIKE $1)`;
+        total_count = await db.query(total_countQuery, params);
+     }*/
     total_count = total_count.rows[0].total_count;
     return [articles.rows, total_count];
 });

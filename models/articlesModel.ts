@@ -20,8 +20,12 @@ export const getAllArticlesModel = async (
   sort_by: any,
   p: any,
   limit: any,
+  search: string,
 ) => {
   let dbQuery: string | boolean;
+
+  search = search ? `%${search}%` : null;
+  const params = [];
 
   dbQuery = `
     SELECT
@@ -36,7 +40,19 @@ export const getAllArticlesModel = async (
     FROM articles a
     LEFT JOIN comments c
     ON c.article_id = a.article_id
+
   `;
+
+  if (search) {
+    dbQuery += `
+    WHERE a.title ILIKE $1
+    OR a.body ILIKE $1
+    OR a.topic ILIKE $1
+    OR a.author ILIKE $1`;
+
+    params.push(search);
+  }
+
   if (topic) {
     const checkTopic = await db.query(
       `SELECT slug FROM topics WHERE slug = $1`,
@@ -45,8 +61,12 @@ export const getAllArticlesModel = async (
 
     if (checkTopic.rows.length < 1)
       return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
-    dbQuery += `WHERE topic = $1`;
+    dbQuery += search ? `AND topic = $2` : `WHERE topic = $1`;
+
+    params.push(topic);
   }
+
+  dbQuery += `GROUP BY a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url`;
 
   if (sort_by) {
     if (!sortBy.has(sort_by))
@@ -64,7 +84,6 @@ export const getAllArticlesModel = async (
   }
 
   dbQuery += `
-    GROUP BY a.article_id
     ORDER BY ${sort_by} ${order.toUpperCase()}
     `;
 
@@ -74,20 +93,28 @@ export const getAllArticlesModel = async (
 
   let articles: QueryResult;
 
-  if (topic) articles = await db.query(dbQuery, [topic]);
-  else articles = await db.query(dbQuery);
+  articles = await db.query(dbQuery, params);
 
   let total_countQuery: string = `
     SELECT CAST(COUNT(article_id) AS INTEGER) as total_count FROM articles
   `;
   let total_count: QueryResult;
 
+  total_countQuery += search ? `WHERE (title ILIKE $1 OR body ILIKE $1 OR topic ILIKE $1 OR author ILIKE $1)` : ``;
+  total_countQuery += topic && search ? `AND topic = $2` : topic ? `WHERE topic = $1` : ``;
+  const totalCountParams = search ? [search] : [];
+  if (topic) totalCountParams.push(topic);
+
+  total_count = await db.query(total_countQuery, totalCountParams)
+/*
   if (topic) {
-    total_countQuery += `WHERE topic = $1`;
-    total_count = await db.query(total_countQuery, [topic]);
-  } else {
-    total_count = await db.query(total_countQuery);
+    total_countQuery += !search ? `WHERE topic = $1 AND (title ILIKE $2 OR body ILIKE $2 OR topic ILIKE $2 OR author ILIKE $2)`;
+    total_count = await db.query(total_countQuery, params);
   }
+  else {
+    total_countQuery += `WHERE (title ILIKE $1 OR body ILIKE $1 OR topic ILIKE $1 OR author ILIKE $1)`;
+    total_count = await db.query(total_countQuery, params);
+ }*/
 
   total_count = total_count.rows[0].total_count;
 

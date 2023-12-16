@@ -22,8 +22,10 @@ export const getAllArticles = async (
     limit
   }= req.query;
 
+  const {search} = req.body;
+
   try {
-    const result = await getAllArticlesModel(topic, order, sort_by, p, limit);
+    const result = await getAllArticlesModel(topic, order, sort_by, p, limit, search);
 
     res.status(200).send({ articles: result[0], total_count: result[1] });
   } catch (error) {
