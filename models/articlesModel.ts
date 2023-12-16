@@ -106,15 +106,6 @@ export const getAllArticlesModel = async (
   if (topic) totalCountParams.push(topic);
 
   total_count = await db.query(total_countQuery, totalCountParams)
-/*
-  if (topic) {
-    total_countQuery += !search ? `WHERE topic = $1 AND (title ILIKE $2 OR body ILIKE $2 OR topic ILIKE $2 OR author ILIKE $2)`;
-    total_count = await db.query(total_countQuery, params);
-  }
-  else {
-    total_countQuery += `WHERE (title ILIKE $1 OR body ILIKE $1 OR topic ILIKE $1 OR author ILIKE $1)`;
-    total_count = await db.query(total_countQuery, params);
- }*/
 
   total_count = total_count.rows[0].total_count;
 
