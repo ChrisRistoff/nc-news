@@ -29,11 +29,11 @@ export const protectedTopicRouter = Router();
  * /api/topics:
  *   get:
  *     summary: Retrieves all topics
- *     description: Provides a list of all available topics.
+ *     description: Provides a list of all available topics, along with the count of articles in each topic.
  *     tags: [Topics]
  *     responses:
  *       200:
- *         description: A list of topics
+ *         description: A list of topics with article counts
  *         content:
  *           application/json:
  *             schema:
@@ -42,7 +42,14 @@ export const protectedTopicRouter = Router();
  *                 topics:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Topic'
+ *                     allOf:
+ *                       - $ref: '#/components/schemas/Topic'
+ *                       - type: object
+ *                         properties:
+ *                           article_count:
+ *                             type: integer
+ *                             description: Count of articles in the topic
+ *                             example: 14
  */
 topicRouter.get("/topics", getAllTopics);
 
