@@ -16,7 +16,13 @@ exports.getActiveUsersInTopicModel = exports.createTopicModel = exports.getAllTo
 const connection_1 = __importDefault(require("../db/connection"));
 const getAllTopicsModel = () => __awaiter(void 0, void 0, void 0, function* () {
     const topics = yield connection_1.default.query(`
-    SELECT * FROM topics;
+    SELECT
+        t.*,
+        CAST(COUNT(a.article_id) AS INTEGER) AS article_count
+    FROM topics t
+    JOIN articles a
+    ON t.slug = a.topic
+    GROUP BY t.slug
   `);
     return topics.rows;
 });

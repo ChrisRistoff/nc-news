@@ -3,7 +3,13 @@ import db from "../db/connection";
 
 export const getAllTopicsModel = async () => {
   const topics: QueryResult = await db.query(`
-    SELECT * FROM topics;
+    SELECT
+        t.*,
+        CAST(COUNT(a.article_id) AS INTEGER) AS article_count
+    FROM topics t
+    JOIN articles a
+    ON t.slug = a.topic
+    GROUP BY t.slug
   `);
 
   return topics.rows;

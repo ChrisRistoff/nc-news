@@ -34,6 +34,7 @@ describe("topics", () => {
     for (const topic of res.body.topics) {
       expect(topic).toHaveProperty("slug");
       expect(topic).toHaveProperty("description");
+      expect(topic).toHaveProperty("article_count");
     }
   });
 });
