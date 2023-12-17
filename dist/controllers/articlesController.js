@@ -12,8 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.editArticleBody = exports.deleteArticle = exports.createArticle = exports.updateArticleById = exports.getArticleById = exports.getAllArticles = void 0;
 const articlesModel_1 = require("../models/articlesModel");
 const getAllArticles = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { topic, order, sort_by, p, limit } = req.query;
-    const { search } = req.body;
+    const { topic, order, sort_by, p, limit, search } = req.query;
     try {
         const result = yield (0, articlesModel_1.getAllArticlesModel)(topic, order, sort_by, p, limit, search);
         res.status(200).send({ articles: result[0], total_count: result[1] });

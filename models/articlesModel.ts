@@ -20,7 +20,7 @@ export const getAllArticlesModel = async (
   sort_by: any,
   p: any,
   limit: any,
-  search: string,
+  search: any,
 ) => {
   let dbQuery: string | boolean;
 

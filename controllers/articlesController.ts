@@ -19,10 +19,10 @@ export const getAllArticles = async (
     order,
     sort_by,
     p,
-    limit
-  }= req.query;
+    limit,
+    search
 
-  const {search} = req.body;
+  }= req.query;
 
   try {
     const result = await getAllArticlesModel(topic, order, sort_by, p, limit, search);
