@@ -10,6 +10,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 80
+EXPOSE 3030
 
 CMD ["node", "./dist/listen.js"]
