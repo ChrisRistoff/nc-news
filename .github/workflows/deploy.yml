@@ -33,5 +33,3 @@ jobs:
           ls -l ~/deploy_script.sh && \
           chmod +x ~/deploy_script.sh && \
           bash ~/deploy_script.sh"
-
-

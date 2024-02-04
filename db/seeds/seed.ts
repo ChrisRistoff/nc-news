@@ -16,6 +16,7 @@ export const seed = async ({
   await db.query(`DROP TABLE IF EXISTS topics;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
 
+  // create users table
   await db.query(`
       CREATE TABLE users (
         username VARCHAR PRIMARY KEY,
@@ -24,6 +25,7 @@ export const seed = async ({
         avatar_url VARCHAR DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
       );`);
 
+  // create topics table
   await db.query(`
       CREATE TABLE topics (
         creator VARCHAR REFERENCES users(username),
@@ -31,6 +33,7 @@ export const seed = async ({
         description VARCHAR
       );`);
 
+  // create articles table
   await db.query(`
       CREATE TABLE articles (
         article_id SERIAL PRIMARY KEY,
@@ -43,6 +46,7 @@ export const seed = async ({
         article_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
       );`);
 
+  // create comments table
   await db.query(`
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
@@ -55,6 +59,7 @@ export const seed = async ({
         FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
       );`);
 
+  // create replies table
   await db.query(`
       CREATE TABLE replies (
         reply_id SERIAL PRIMARY KEY,
@@ -88,6 +93,7 @@ export const seed = async ({
       description,
     ]),
   );
+
   await db.query(insertTopicsQueryStr);
 
   const formattedArticleData = articleData.map(convertTimestampToDate);
