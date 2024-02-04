@@ -11,63 +11,84 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateReplyVote = exports.editReplyBody = exports.deleteReplyById = exports.createReply = exports.getAllRepliesForComment = void 0;
 const repliesModel_1 = require("../models/repliesModels/repliesModel");
+const protectedRepliesModel_1 = require("../models/repliesModels/protectedRepliesModel");
 const getAllRepliesForComment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the comment_id from the request
     const { comment_id } = req.params;
     try {
+        // get the replies for the comment
         const replies = yield (0, repliesModel_1.getRepliesForCommentModel)(comment_id);
+        // send the replies
         res.status(200).send({ replies });
     }
     catch (error) {
+        // handle the error
         next(error);
     }
 });
 exports.getAllRepliesForComment = getAllRepliesForComment;
 const createReply = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the comment_id, username and body from the request
     const { comment_id } = req.params;
     const { username } = req.user;
     const { body } = req.body;
     try {
-        const reply = yield (0, repliesModel_1.createReplyModel)(comment_id, username, body);
+        // create the reply
+        const reply = yield (0, protectedRepliesModel_1.createReplyModel)(comment_id, username, body);
+        // send the reply object
         res.status(201).send({ reply });
     }
     catch (error) {
+        // handle the error
         next(error);
     }
 });
 exports.createReply = createReply;
 const deleteReplyById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the username and reply_id from the request
     const { username } = req.user;
     const { reply_id } = req.params;
     try {
-        yield (0, repliesModel_1.deleteReplyByIdModel)(reply_id, username);
+        // delete the reply by id
+        yield (0, protectedRepliesModel_1.deleteReplyByIdModel)(reply_id, username);
+        // send 204 status
         res.status(204).send();
     }
     catch (error) {
+        // handle the error
         next(error);
     }
 });
 exports.deleteReplyById = deleteReplyById;
 const editReplyBody = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the reply_id, username and body from the request
     const { reply_id } = req.params;
     const { username } = req.user;
     const { body } = req.body;
     try {
-        const reply = yield (0, repliesModel_1.editReplyBodyModel)(reply_id, username, body);
+        // edit the reply body
+        const reply = yield (0, protectedRepliesModel_1.editReplyBodyModel)(reply_id, username, body);
+        // send the reply object
         res.status(200).send({ reply });
     }
     catch (error) {
+        // handle the error
         next(error);
     }
 });
 exports.editReplyBody = editReplyBody;
 const updateReplyVote = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    // get the inc_votes and reply_id from the request
     const { inc_votes } = req.body;
     const { reply_id } = req.params;
     try {
-        const reply = yield (0, repliesModel_1.updateReplyVoteModel)(reply_id, inc_votes);
+        // update the reply vote
+        const reply = yield (0, protectedRepliesModel_1.updateReplyVoteModel)(reply_id, inc_votes);
+        // send the reply object
         res.status(200).send({ reply });
     }
     catch (error) {
+        // handle the error
         next(error);
     }
 });
