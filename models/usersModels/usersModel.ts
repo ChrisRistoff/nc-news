@@ -1,6 +1,6 @@
 import { Query, QueryResult } from "pg";
-import db from "../db/connection";
-import { comparePassword } from "../middleware/authMiddleware";
+import db from "../../db/connection";
+import { comparePassword } from "../../middleware/authMiddleware";
 import exp from "node:constants";
 
 export const createUserModel = async (

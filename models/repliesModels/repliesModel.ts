@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import db from "../db/connection";
+import db from "../../db/connection";
 
 export const getRepliesForCommentModel = async (comment_id: string) => {
   const comment: QueryResult = await db.query(

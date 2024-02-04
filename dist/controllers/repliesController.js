@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateReplyVote = exports.editReplyBody = exports.deleteReplyById = exports.createReply = exports.getAllRepliesForComment = void 0;
-const repliesModel_1 = require("../models/repliesModel");
+const repliesModel_1 = require("../models/repliesModels/repliesModel");
 const getAllRepliesForComment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { comment_id } = req.params;
     try {

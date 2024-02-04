@@ -1,10 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  getAllTopicsModel,
-  createTopicModel,
-  getActiveUsersInTopicModel,
-} from "../models/topicsModels";
 import { CustomRequest } from "../types/request";
+import {createTopicModel, getActiveUsersInTopicModel, getAllTopicsModel} from "../models/topicsModels/topicsModels";
 
 export const getAllTopics = async (
   _: Request,

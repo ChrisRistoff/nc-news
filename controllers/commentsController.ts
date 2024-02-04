@@ -1,13 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { CustomRequest } from "../types/request";
-
 import {
   createCommentForArticleModel,
-  deleteCommentByIdModel,
-  updateCommentByIdModel,
-  getAllCommentsForArticleModel,
-  editCommentByIdModel,
-} from "../models/commentsModel";
+  deleteCommentByIdModel, editCommentByIdModel,
+  getAllCommentsForArticleModel, updateCommentByIdModel
+} from "../models/commentsModoels/commentsModel";
+
 
 export const createCommentForArticle = async (
   req: CustomRequest,

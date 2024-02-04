@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getActiveUsersInTopic = exports.createTopic = exports.getAllTopics = void 0;
-const topicsModels_1 = require("../models/topicsModels");
+const topicsModels_1 = require("../models/topicsModels/topicsModels");
 const getAllTopics = (_, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const topics = yield (0, topicsModels_1.getAllTopicsModel)();

@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { hashPassword, createJWT } from "../middleware/authMiddleware";
-import {
-  getAllUsersModel,
-  getUserByUsernameModel,
-  createUserModel,
-  signUserInModel, getUserArticlesModel, getUserCommentsModel,
-} from "../models/usersModel";
 import { CustomRequest } from "../types/request";
 import exp from "node:constants";
+import {
+  createUserModel,
+  getAllUsersModel, getUserArticlesModel,
+  getUserByUsernameModel, getUserCommentsModel,
+  signUserInModel
+} from "../models/usersModels/usersModel";
 
 export const createUser = async (
   req: CustomRequest,

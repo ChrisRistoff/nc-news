@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
-import db from "../db/connection";
-import { paginateQuery } from "../middleware/paginate";
-import { getArticleByIdModel } from "./articlesModel";
+import db from "../../db/connection";
+import { paginateQuery } from "../../middleware/paginate";
+import { getArticleByIdModel } from "../articlesModels/articlesModel";
 
 export const createCommentForArticleModel = async (
   body: string,

@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express";
+import { CustomRequest } from "../types/request";
 import {
   createReplyModel,
   deleteReplyByIdModel,
   editReplyBodyModel,
-  getRepliesForCommentModel,
-  updateReplyVoteModel,
-} from "../models/repliesModel";
-import { CustomRequest } from "../types/request";
+  getRepliesForCommentModel, updateReplyVoteModel
+} from "../models/repliesModels/repliesModel";
 
 export const getAllRepliesForComment = async (
   req: Request,

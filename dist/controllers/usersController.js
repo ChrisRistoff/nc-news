@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserComments = exports.getUserArticles = exports.getUserByUsername = exports.getAllUsers = exports.signUserIn = exports.createUser = void 0;
 const authMiddleware_1 = require("../middleware/authMiddleware");
-const usersModel_1 = require("../models/usersModel");
+const usersModel_1 = require("../models/usersModels/usersModel");
 const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, username, password, avatar_url } = req.body;
     const hashedPw = yield (0, authMiddleware_1.hashPassword)(password);

@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import db from "../db/connection";
+import db from "../../db/connection";
 
 export const getAllTopicsModel = async () => {
   const topics: QueryResult = await db.query(`
