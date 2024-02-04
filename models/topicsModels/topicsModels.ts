@@ -1,7 +1,12 @@
 import { QueryResult } from "pg";
 import db from "../../db/connection";
 
+
+
+
 export const getAllTopicsModel = async () => {
+
+  // get all topics
   const topics: QueryResult = await db.query(`
     SELECT
         t.*,
@@ -12,28 +17,15 @@ export const getAllTopicsModel = async () => {
     GROUP BY t.slug
   `);
 
+  // return the topics
   return topics.rows;
 };
 
-export const createTopicModel = async (
-  slug: string,
-  description: string,
-  creator: string,
-) => {
-  if (!slug || !description)
-    return Promise.reject({ errCode: 400, errMsg: "Invalid input" });
-  const topic: QueryResult = await db.query(
-    `
-    INSERT INTO topics (creator, slug, description)
-    VALUES ($3, $1, $2) RETURNING *
-    `,
-    [slug, description, creator],
-  );
 
-  return topic.rows[0];
-};
 
 export const getActiveUsersInTopicModel = async (topic: string) => {
+
+  // check if the topic exists
   const checkTopic: QueryResult = await db.query(
     `
   SELECT slug FROM topics WHERE slug = $1
@@ -41,10 +33,12 @@ export const getActiveUsersInTopicModel = async (topic: string) => {
     [topic],
   );
 
+  // if the topic does not exist, return 404
   if (checkTopic.rows.length < 1) {
     return Promise.reject({ errCode: 404, errMsg: "Topic not found" });
   }
 
+  // get the active users in the topic
   const users: QueryResult = await db.query(
     `
   SELECT u.username, u.name, u.avatar_url
@@ -57,5 +51,6 @@ export const getActiveUsersInTopicModel = async (topic: string) => {
     [topic],
   );
 
+  // return the users
   return users.rows;
 };
