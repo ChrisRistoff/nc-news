@@ -39,7 +39,9 @@ const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const cors_1 = __importDefault(require("cors"));
 exports.app = (0, express_1.default)();
+// use cors
 exports.app.use((0, cors_1.default)());
+// set up swagger
 const options = {
     definition: {
         openapi: "3.1.0",
@@ -62,10 +64,13 @@ const options = {
     },
     apis: ["./dist/routers/*.js"],
 };
+// initialize swagger-jsdoc
 const openApiSpecs = (0, swagger_jsdoc_1.default)(options);
+// use express.json
 exports.app.use(express_1.default.json());
 //docs
 exports.app.get("/api", docController_1.getDocs);
+//use swagger-ui
 exports.app.use("/api/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(openApiSpecs));
 //topics
 exports.app.use("/api", topic.topicRouter);
@@ -81,4 +86,5 @@ exports.app.use("/api", replies.repliesRouter);
 exports.app.use("/api", replies.protectedRepliesRouter);
 //users
 exports.app.use("/api", usersRouter_1.usersRouter);
+//error handling
 exports.app.use(errorHandlers_1.sqlErrors, errorHandlers_1.customErrors, errorHandlers_1.serverError);

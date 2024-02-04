@@ -23,6 +23,7 @@ const seed = ({ topicData, userData, articleData, commentData, repliesData }) =>
     yield connection_1.default.query(`DROP TABLE IF EXISTS articles;`);
     yield connection_1.default.query(`DROP TABLE IF EXISTS topics;`);
     yield connection_1.default.query(`DROP TABLE IF EXISTS users;`);
+    // create users table
     yield connection_1.default.query(`
       CREATE TABLE users (
         username VARCHAR PRIMARY KEY,
@@ -30,12 +31,14 @@ const seed = ({ topicData, userData, articleData, commentData, repliesData }) =>
         password VARCHAR NOT NULL,
         avatar_url VARCHAR DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
       );`);
+    // create topics table
     yield connection_1.default.query(`
       CREATE TABLE topics (
         creator VARCHAR REFERENCES users(username),
         slug VARCHAR PRIMARY KEY,
         description VARCHAR
       );`);
+    // create articles table
     yield connection_1.default.query(`
       CREATE TABLE articles (
         article_id SERIAL PRIMARY KEY,
@@ -47,6 +50,7 @@ const seed = ({ topicData, userData, articleData, commentData, repliesData }) =>
         votes INT DEFAULT 0 NOT NULL,
         article_img_url VARCHAR DEFAULT 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700'
       );`);
+    // create comments table
     yield connection_1.default.query(`
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
@@ -58,6 +62,7 @@ const seed = ({ topicData, userData, articleData, commentData, repliesData }) =>
         FOREIGN KEY (author) REFERENCES users(username),
         FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
       );`);
+    // create replies table
     yield connection_1.default.query(`
       CREATE TABLE replies (
         reply_id SERIAL PRIMARY KEY,

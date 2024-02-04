@@ -14,10 +14,14 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import cors from "cors";
 
+
+
 export const app = express();
 
+// use cors
 app.use(cors());
 
+// set up swagger
 const options = {
   definition: {
     openapi: "3.1.0",
@@ -41,13 +45,16 @@ const options = {
   apis: ["./dist/routers/*.js"],
 };
 
+// initialize swagger-jsdoc
 const openApiSpecs = swaggerJSDoc(options)
 
+// use express.json
 app.use(express.json());
 
 //docs
 app.get("/api", getDocs);
 
+//use swagger-ui
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openApiSpecs));
 
 //topics
@@ -69,4 +76,5 @@ app.use("/api", replies.protectedRepliesRouter)
 //users
 app.use("/api", usersRouter);
 
+//error handling
 app.use(sqlErrors, customErrors, serverError);
