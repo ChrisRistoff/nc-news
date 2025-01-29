@@ -1,3 +1,8 @@
+export const getAllRepliesForComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
 import { Request, Response, NextFunction } from "express";
 import { CustomRequest } from "../types/request";
 import {getRepliesForCommentModel} from "../models/repliesModels/repliesModel";
@@ -10,22 +15,17 @@ import {
 
 
 
-export const getAllRepliesForComment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
 
   // get the comment_id from the request
   const { comment_id } = req.params;
 
   try {
+    // send the replies
+    res.status(200).send({ replies });
 
     // get the replies for the comment
     const replies = await getRepliesForCommentModel(comment_id);
 
-    // send the replies
-    res.status(200).send({ replies });
 
   } catch (error) {
 
@@ -33,19 +33,16 @@ export const getAllRepliesForComment = async (
     next(error);
   }
 };
-
-export const createReply = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-
   // get the comment_id, username and body from the request
   const { comment_id } = req.params;
   const { username } = req.user;
   const { body } = req.body;
 
   try {
+
+export const createReply = async (
+  req: CustomRequest,
+  res: Response,
 
     // create the reply
     const reply = await createReplyModel(comment_id, username, body);
@@ -54,6 +51,10 @@ export const createReply = async (
     res.status(201).send({ reply });
 
   } catch (error) {
+
+
+  next: NextFunction,
+) => {
 
     // handle the error
     next(error);

@@ -40,6 +40,15 @@ export const getAllArticles = async (
   }
 };
 
+    // send response
+    res.status(200).send({ article });
+
+  } catch (error) {
+
+    // handle error
+    next(error);
+  }
+};
 
 export const getArticleById = async (
   req: Request,
@@ -53,19 +62,24 @@ export const getArticleById = async (
     // get article by id
     const article = await getArticleByIdModel(article_id);
 
-    // send response
-    res.status(200).send({ article });
-
-  } catch (error) {
-
-    // handle error
-    next(error);
-  }
-};
 
 
 export const updateArticleById = async (
   req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+    // update article by id
+    const newArticle = await updateArticleByIdModel(article_id, inc_votes);
+
+    // send response
+    res.status(200).send({ newArticle });
+
+  } catch (error) {
+
+
+export const createArticle = async (
+  req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
@@ -76,30 +90,16 @@ export const updateArticleById = async (
 
   try {
 
-    // update article by id
-    const newArticle = await updateArticleByIdModel(article_id, inc_votes);
 
-    // send response
-    res.status(200).send({ newArticle });
-
-  } catch (error) {
+  // get title, body, topic, article_img_url and author
+  const { title, body, topic, article_img_url } = req.body;
+  const author = req.user.username;
 
     // handle error
     next(error);
   }
 };
 
-
-
-export const createArticle = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-
-  // get title, body, topic, article_img_url and author
-  const { title, body, topic, article_img_url } = req.body;
-  const author = req.user.username;
 
   try {
 
@@ -129,13 +129,6 @@ export const deleteArticle = async (
   res: Response,
   next: NextFunction,
 ) => {
-
-  // get article_id and username
-  const { article_id } = req.params;
-  const username = req.user.username;
-
-  try {
-
     // delete article
     await deleteArticleModel(article_id, username);
 
@@ -156,6 +149,13 @@ export const editArticleBody = async (
   res: Response,
   next: NextFunction,
 ) => {
+
+  // get article_id and username
+  const { article_id } = req.params;
+  const username = req.user.username;
+
+  try {
+
 
   // get article_id, body and username
   const { article_id } = req.params;

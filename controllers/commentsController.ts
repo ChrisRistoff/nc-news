@@ -10,17 +10,6 @@ import {getAllCommentsForArticleModel} from "../models/commentsModoels/commentsM
 
 
 
-export const createCommentForArticle = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-
-  // get the body, article_id and username from the request
-  const { body } = req.body;
-  const { article_id } = req.params;
-  const { username } = req.user;
-
   try {
 
     // create a new comment for the article
@@ -32,6 +21,17 @@ export const createCommentForArticle = async (
 
     // send the comment object
     res.status(201).send({ comment });
+export const createCommentForArticle = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+
+  // get the body, article_id and username from the request
+  const { body } = req.body;
+  const { article_id } = req.params;
+  const { username } = req.user;
+
 
   } catch (error) {
 
@@ -42,6 +42,11 @@ export const createCommentForArticle = async (
 
 
 
+    // get all the comments for the article
+    const comments = await getAllCommentsForArticleModel(article_id, p, limit);
+
+    // send the comments array and the total count
+    res.status(200).send({ comments: comments[0], total_count: comments[1] });
 export const getAllCommentsForArticle = async (
   req: Request,
   res: Response,
@@ -54,11 +59,6 @@ export const getAllCommentsForArticle = async (
 
   try {
 
-    // get all the comments for the article
-    const comments = await getAllCommentsForArticleModel(article_id, p, limit);
-
-    // send the comments array and the total count
-    res.status(200).send({ comments: comments[0], total_count: comments[1] });
 
   } catch (error) {
 
@@ -67,6 +67,11 @@ export const getAllCommentsForArticle = async (
   }
 };
 
+    // delete the comment by id
+    await deleteCommentByIdModel(comment_id, username);
+
+    // send 204 status
+    res.status(204).send({});
 export const deleteCommentById = async (
   req: CustomRequest,
   res: Response,
@@ -79,11 +84,6 @@ export const deleteCommentById = async (
 
   try {
 
-    // delete the comment by id
-    await deleteCommentByIdModel(comment_id, username);
-
-    // send 204 status
-    res.status(204).send({});
 
   } catch (error) {
 
@@ -126,6 +126,8 @@ export const editCommentById = async (
   res: Response,
   next: NextFunction,
 ) => {
+    // edit the comment by id
+    const comment = await editCommentByIdModel(comment_id, body, username);
 
   // get the comment_id, body and username from the request
   const { comment_id } = req.params;
@@ -134,8 +136,6 @@ export const editCommentById = async (
 
   try {
 
-    // edit the comment by id
-    const comment = await editCommentByIdModel(comment_id, body, username);
 
     // send the comment object
     res.status(200).send({ comment });
